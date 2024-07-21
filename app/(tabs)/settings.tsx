@@ -1,11 +1,11 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Image, Platform } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
-export default function HomeScreen() {
+export default function SettingsScreen() {
   return (
     <ThemedView style={styles.container}>
-      <ThemedText>Hello World</ThemedText>
+      <ThemedText>Settings</ThemedText>
     </ThemedView>
   );
 }
@@ -13,7 +13,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
   },
 });
