@@ -1,14 +1,14 @@
+import { UText } from "@/components/ui/Text";
+import { UView } from "@/components/ui/View";
 import { Button, StyleSheet } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { setWallpaper, TYPE_SCREEN } from "rn-wallpapers";
 
 const Sources = () => {
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText>Sources</ThemedText>
+    <UView style={styles.container}>
+      <UText>Sources</UText>
       <Button onPress={set} title="Change Wallpaper" />
-    </ThemedView>
+    </UView>
   );
 };
 

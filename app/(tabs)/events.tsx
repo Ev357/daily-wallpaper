@@ -1,12 +1,12 @@
+import { UText } from "@/components/ui/Text";
+import { UView } from "@/components/ui/View";
 import { StyleSheet } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 
 const Events = () => {
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText>Events</ThemedText>
-    </ThemedView>
+    <UView style={styles.container}>
+      <UText>Events</UText>
+    </UView>
   );
 };
 
