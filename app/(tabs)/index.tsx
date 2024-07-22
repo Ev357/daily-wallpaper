@@ -7,21 +7,21 @@ const Sources = () => {
   return (
     <UView style={styles.container}>
       <UText>Sources</UText>
-      <Button onPress={set} title="Change Wallpaper" />
+      <Button onPress={setWallpaperOnPress} title="Change Wallpaper" />
     </UView>
   );
 };
 
 export default Sources;
 
-async function set() {
+const setWallpaperOnPress = async () => {
   await setWallpaper(
     {
       uri: "https://i0.wp.com/techwek.com/wp-content/uploads/2021/01/wallpaper-gotas-de-chuva.jpg",
     },
     TYPE_SCREEN.HOME
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
