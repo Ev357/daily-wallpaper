@@ -9,9 +9,8 @@ const TabLayout = () => {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.cardForeground,
         tabBarInactiveTintColor: colors.mutedForeground,
-        headerShown: false,
+        tabBarShowLabel: false,
       }}
     >
       <Tabs.Screen

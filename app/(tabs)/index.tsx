@@ -1,13 +1,34 @@
-import { UText } from "@/components/ui/Text";
 import { UView } from "@/components/ui/View";
-import { Button, StyleSheet } from "react-native";
+import { FlatList, View } from "react-native";
 import { setWallpaper, TYPE_SCREEN } from "rn-wallpapers";
+import { unsplash } from "@/sources/unsplash";
+import { facebook } from "@/sources/facebook";
+import type { Source } from "@/sources/types";
+import { UCard } from "@/components/ui/card/Card";
+import { spacing } from "@expo/styleguide-base";
+import { UCardHeader } from "@/components/ui/card/CardHeader";
+import { UCardTitle } from "@/components/ui/card/CardTitle";
+
+const sources: Source[] = [unsplash, facebook];
 
 const Sources = () => {
   return (
-    <UView style={styles.container} safe>
-      <UText>Sources</UText>
-      <Button onPress={setWallpaperOnPress} title="Change Wallpaper" />
+    <UView
+      style={{ flex: 1, paddingHorizontal: spacing[4], paddingTop: spacing[4] }}
+      safe
+    >
+      <FlatList
+        data={sources}
+        renderItem={({ item }) => (
+          <UCard>
+            <UCardHeader>
+              <UCardTitle>{item.name}</UCardTitle>
+            </UCardHeader>
+          </UCard>
+        )}
+        keyExtractor={(item) => item.name}
+        ItemSeparatorComponent={() => <View style={{ height: spacing[2] }} />}
+      />
     </UView>
   );
 };
@@ -22,11 +43,3 @@ const setWallpaperOnPress = async () => {
     TYPE_SCREEN.HOME
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
