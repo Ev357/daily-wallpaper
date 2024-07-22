@@ -1,21 +1,21 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { colors } from "@/constants/colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { useColors } from "@/hooks/useColors";
 
 const TabLayout = () => {
-  const colorScheme = useColorScheme();
+  const colors = useColors();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors[colorScheme ?? "light"].cardForeground,
-        tabBarInactiveTintColor: colors[colorScheme ?? "light"].mutedForeground,
+        tabBarActiveTintColor: colors.cardForeground,
+        tabBarInactiveTintColor: colors.mutedForeground,
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: colors[colorScheme ?? "light"].card,
-        }
+          backgroundColor: colors.card,
+          borderTopColor: colors.border,
+        },
       }}
     >
       <Tabs.Screen
