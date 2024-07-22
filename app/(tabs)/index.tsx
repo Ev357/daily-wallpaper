@@ -13,10 +13,7 @@ const sources: Source[] = [unsplash, facebook];
 
 const Sources = () => {
   return (
-    <UView
-      style={{ flex: 1, paddingHorizontal: spacing[4], paddingTop: spacing[4] }}
-      safe
-    >
+    <UView style={{ flex: 1, paddingHorizontal: spacing[4] }} safe>
       <FlatList
         data={sources}
         renderItem={({ item }) => (
