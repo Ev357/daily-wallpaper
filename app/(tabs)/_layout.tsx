@@ -12,10 +12,6 @@ const TabLayout = () => {
         tabBarActiveTintColor: colors.cardForeground,
         tabBarInactiveTintColor: colors.mutedForeground,
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: colors.card,
-          borderTopColor: colors.border,
-        },
       }}
     >
       <Tabs.Screen
