@@ -5,7 +5,7 @@ import { setWallpaper, TYPE_SCREEN } from "rn-wallpapers";
 
 const Sources = () => {
   return (
-    <UView style={styles.container}>
+    <UView style={styles.container} safe>
       <UText>Sources</UText>
       <Button onPress={setWallpaperOnPress} title="Change Wallpaper" />
     </UView>
