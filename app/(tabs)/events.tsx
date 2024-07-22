@@ -2,15 +2,15 @@ import { StyleSheet } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
-const Settings = () => {
+const Events = () => {
   return (
     <ThemedView style={styles.container}>
-      <ThemedText>Settings</ThemedText>
+      <ThemedText>Events</ThemedText>
     </ThemedView>
   );
 };
 
-export default Settings;
+export default Events;
 
 const styles = StyleSheet.create({
   container: {

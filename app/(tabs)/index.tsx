@@ -3,16 +3,16 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { setWallpaper, TYPE_SCREEN } from "rn-wallpapers";
 
-const HomeScreen = () => {
+const Sources = () => {
   return (
     <ThemedView style={styles.container}>
-      <ThemedText>Hello World</ThemedText>
+      <ThemedText>Sources</ThemedText>
       <Button onPress={set} title="Change Wallpaper" />
     </ThemedView>
   );
 };
 
-export default HomeScreen;
+export default Sources;
 
 async function set() {
   await setWallpaper(
