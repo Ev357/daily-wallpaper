@@ -1,5 +1,5 @@
 import { type ViewProps } from "react-native";
-import { UText } from "@/components/ui/Text";
+import { UText } from "@/components/ui/text/Text";
 
 export const UCardTitle = ({ style, ...otherProps }: ViewProps) => {
   return (

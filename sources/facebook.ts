@@ -1,5 +1,9 @@
 import { Source } from "@/sources/types";
 
-export const facebook: Source = {
-  name: "Facebook",
+export const facebook = () => {
+  const facebook: Source = {
+    name: "Facebook",
+  };
+
+  return facebook;
 };

@@ -1,5 +1,5 @@
-import { UText } from "@/components/ui/Text";
-import { UView } from "@/components/ui/View";
+import { UText } from "@/components/ui/text/Text";
+import { UView } from "@/components/ui/view/View";
 
 const Events = () => {
   return (
