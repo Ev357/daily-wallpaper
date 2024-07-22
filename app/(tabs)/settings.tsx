@@ -2,13 +2,15 @@ import { StyleSheet, Image, Platform } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
-export default function SettingsScreen() {
+const SettingsScreen = () => {
   return (
     <ThemedView style={styles.container}>
       <ThemedText>Settings</ThemedText>
     </ThemedView>
   );
-}
+};
+
+export default SettingsScreen;
 
 const styles = StyleSheet.create({
   container: {

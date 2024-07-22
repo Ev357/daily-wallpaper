@@ -14,7 +14,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+const RootLayout = () => {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     Geist: require("../assets/fonts/Geist-Regular.ttf"),
@@ -38,4 +38,6 @@ export default function RootLayout() {
       </Stack>
     </ThemeProvider>
   );
-}
+};
+
+export default RootLayout;
