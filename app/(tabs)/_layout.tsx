@@ -12,6 +12,7 @@ const TabLayout = () => {
         screenOptions={{
           tabBarInactiveTintColor: colors.mutedForeground,
           tabBarShowLabel: false,
+          unmountOnBlur: true,
         }}
       >
         <Tabs.Screen
