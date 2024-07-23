@@ -1,7 +1,7 @@
 import { UButton } from "@/components/ui/button";
 import { UPicker, UPickerItem } from "@/components/ui/picker";
 import { UTextInput } from "@/components/ui/text-input";
-import { UText } from "@/components/ui/text/Text";
+import { UText } from "@/components/ui/text";
 import { getFormattedTime } from "@/utils/getFormattedTime";
 import { spacing } from "@expo/styleguide-base";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";

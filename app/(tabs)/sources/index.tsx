@@ -3,10 +3,8 @@ import { setWallpaper, TYPE_SCREEN } from "rn-wallpapers";
 import { unsplashSource } from "@/sources/unsplash";
 import { facebookSource } from "@/sources/facebook";
 import type { Source } from "@/sources/types";
-import { UCard } from "@/components/ui/card/Card";
+import { UCard, UCardHeader, UCardTitle } from "@/components/ui/card";
 import { spacing } from "@expo/styleguide-base";
-import { UCardHeader } from "@/components/ui/card/CardHeader";
-import { UCardTitle } from "@/components/ui/card/CardTitle";
 import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 

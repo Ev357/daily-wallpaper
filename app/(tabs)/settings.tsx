@@ -1,4 +1,4 @@
-import { UText } from "@/components/ui/text/Text";
+import { UText } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Settings = () => {

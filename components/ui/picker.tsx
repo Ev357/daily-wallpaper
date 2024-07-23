@@ -8,7 +8,7 @@ import {
 import type { ItemValue } from "@react-native-picker/picker/typings/Picker";
 import { type StyleProp, View, type ViewStyle } from "react-native";
 
-const UPicker = <T = ItemValue,>({
+export const UPicker = <T = ItemValue,>({
   style,
   dropdownIconColor,
   containerStyle,
@@ -43,7 +43,7 @@ const UPicker = <T = ItemValue,>({
   );
 };
 
-const UPickerItem = <T = ItemValue,>({
+export const UPickerItem = <T = ItemValue,>({
   color,
   style,
   ...otherProps
@@ -61,5 +61,3 @@ const UPickerItem = <T = ItemValue,>({
     />
   );
 };
-
-export { UPicker, UPickerItem };
