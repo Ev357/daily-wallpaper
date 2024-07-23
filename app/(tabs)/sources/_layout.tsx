@@ -6,9 +6,10 @@ const SourceLayout = () => {
       <Stack.Screen
         name="index"
         options={{
-          headerShown: false,
+          title: "Sources",
         }}
       />
+      <Stack.Screen name="new-event" options={{ title: "New Event" }} />
     </Stack>
   );
 };

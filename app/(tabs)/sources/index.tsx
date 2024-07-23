@@ -1,5 +1,5 @@
 import { UView } from "@/components/ui/view/View";
-import { FlatList, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { setWallpaper, TYPE_SCREEN } from "rn-wallpapers";
 import { unsplash } from "@/sources/unsplash";
 import { facebook } from "@/sources/facebook";
@@ -8,6 +8,7 @@ import { UCard } from "@/components/ui/card/Card";
 import { spacing } from "@expo/styleguide-base";
 import { UCardHeader } from "@/components/ui/card/CardHeader";
 import { UCardTitle } from "@/components/ui/card/CardTitle";
+import { Link } from "expo-router";
 
 const sources: Source[] = [unsplash(), facebook()];
 
@@ -17,13 +18,20 @@ const Sources = () => {
       <FlatList
         data={sources}
         renderItem={({ item }) => (
-          <TouchableOpacity>
-            <UCard>
-              <UCardHeader>
-                <UCardTitle>{item.name}</UCardTitle>
-              </UCardHeader>
-            </UCard>
-          </TouchableOpacity>
+          <Link
+            href={{
+              pathname: "/sources/new-event",
+            }}
+            asChild
+          >
+            <TouchableOpacity>
+              <UCard>
+                <UCardHeader>
+                  <UCardTitle>{item.name}</UCardTitle>
+                </UCardHeader>
+              </UCard>
+            </TouchableOpacity>
+          </Link>
         )}
         keyExtractor={(item) => item.name}
         ItemSeparatorComponent={() => <View style={{ height: spacing[2] }} />}

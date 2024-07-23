@@ -9,7 +9,6 @@ export const UCard = ({ style, ...otherProps }: ViewProps) => {
     <View
       style={[
         {
-          backgroundColor: colors.card,
           borderWidth: 1,
           borderColor: colors.border,
           borderRadius: spacing[2],
