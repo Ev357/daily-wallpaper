@@ -9,7 +9,7 @@ const SourceLayout = () => {
           title: "Sources",
         }}
       />
-      <Stack.Screen name="new-event" options={{ title: "New Event" }} />
+      <Stack.Screen name="[name]" options={{ title: "New Event" }} />
     </Stack>
   );
 };

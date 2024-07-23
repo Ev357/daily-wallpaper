@@ -4,9 +4,8 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import { ActivityIndicator, useColorScheme } from "react-native";
+import { ActivityIndicator, useColorScheme, View } from "react-native";
 import { darkTheme, lightTheme } from "@/constants/themes";
-import { UView } from "@/components/ui/view/View";
 import { useColors } from "@/hooks/useColors";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -27,11 +26,9 @@ const RootLayout = () => {
 
   if (!loaded) {
     return (
-      <UView
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      >
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color={colors.foreground} />
-      </UView>
+      </View>
     );
   }
 

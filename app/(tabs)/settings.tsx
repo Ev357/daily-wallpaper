@@ -1,14 +1,13 @@
 import { UText } from "@/components/ui/text/Text";
-import { UView } from "@/components/ui/view/View";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Settings = () => {
   return (
-    <UView
+    <SafeAreaView
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      safe
     >
       <UText>Settings</UText>
-    </UView>
+    </SafeAreaView>
   );
 };
 
