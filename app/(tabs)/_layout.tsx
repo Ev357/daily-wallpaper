@@ -14,7 +14,7 @@ const TabLayout = () => {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="sources"
         options={{
           title: "Sources",
           tabBarIcon: ({ color, focused }) => (
