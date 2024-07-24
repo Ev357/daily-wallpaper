@@ -154,7 +154,7 @@ export const UnsplashSearch = () => {
       <UnsplashQuery
         query={settings.settings.search.query}
         setQuery={(query) =>
-          dispatchSettings({ type: "setSerachQuery", query })
+          dispatchSettings({ type: "setSearchQuery", query })
         }
       />
       <View
@@ -168,7 +168,7 @@ export const UnsplashSearch = () => {
         <UPicker
           selectedValue={settings.settings.search.orderBy}
           onValueChange={(itemValue) =>
-            dispatchSettings({ type: "setSerachOrderBy", orderBy: itemValue })
+            dispatchSettings({ type: "setSearchOrderBy", orderBy: itemValue })
           }
           mode="dropdown"
           containerStyle={{
@@ -182,7 +182,7 @@ export const UnsplashSearch = () => {
       <UnsplashCollections
         collections={settings.settings.search.collections}
         setCollections={(collections) =>
-          dispatchSettings({ type: "setSerachCollections", collections })
+          dispatchSettings({ type: "setSearchCollections", collections })
         }
       />
       <View
@@ -196,7 +196,7 @@ export const UnsplashSearch = () => {
         <UPicker
           selectedValue={settings.settings.search.color}
           onValueChange={(itemValue) =>
-            dispatchSettings({ type: "setSerachColor", color: itemValue })
+            dispatchSettings({ type: "setSearchColor", color: itemValue })
           }
           mode="dropdown"
           containerStyle={{
@@ -229,7 +229,7 @@ export const UnsplashSearch = () => {
           selectedValue={settings.settings.search.orientation}
           onValueChange={(itemValue) =>
             dispatchSettings({
-              type: "setSerachOrientation",
+              type: "setSearchOrientation",
               orientation: itemValue,
             })
           }

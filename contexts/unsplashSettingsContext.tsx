@@ -85,23 +85,23 @@ export type UnsplashSettingsActions =
       orientation: UnsplashOrientation;
     }
   | {
-      type: "setSerachQuery";
+      type: "setSearchQuery";
       query: string;
     }
   | {
-      type: "setSerachOrderBy";
+      type: "setSearchOrderBy";
       orderBy: "latest" | "relevant";
     }
   | {
-      type: "setSerachCollections";
+      type: "setSearchCollections";
       collections: string | undefined;
     }
   | {
-      type: "setSerachColor";
+      type: "setSearchColor";
       color: UnsplashColor;
     }
   | {
-      type: "setSerachOrientation";
+      type: "setSearchOrientation";
       orientation: "portrait" | "landscape" | "all";
     }
   | {
@@ -192,7 +192,7 @@ const unsplashSettingsReducer = (
           },
         },
       } satisfies Settings;
-    case "setSerachQuery":
+    case "setSearchQuery":
       return {
         ...state,
         settings: {
@@ -203,7 +203,7 @@ const unsplashSettingsReducer = (
           },
         },
       } satisfies Settings;
-    case "setSerachOrderBy":
+    case "setSearchOrderBy":
       return {
         ...state,
         settings: {
@@ -214,7 +214,7 @@ const unsplashSettingsReducer = (
           },
         },
       } satisfies Settings;
-    case "setSerachCollections":
+    case "setSearchCollections":
       return {
         ...state,
         settings: {
@@ -225,7 +225,7 @@ const unsplashSettingsReducer = (
           },
         },
       } satisfies Settings;
-    case "setSerachColor":
+    case "setSearchColor":
       return {
         ...state,
         settings: {
@@ -236,7 +236,7 @@ const unsplashSettingsReducer = (
           },
         },
       } satisfies Settings;
-    case "setSerachOrientation":
+    case "setSearchOrientation":
       return {
         ...state,
         settings: {
