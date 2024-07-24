@@ -1,6 +1,7 @@
 import EventScreen from "@/components/EventScreen";
 import EventTiming from "@/components/EventTiming";
 import { USeparator } from "@/components/ui/separator";
+import type { ScreenType } from "@/constants/screenTypes";
 import { Source } from "@/sources/types";
 import { spacing } from "@expo/styleguide-base";
 import { useState } from "react";
@@ -21,6 +22,8 @@ export const Unsplash = () => {
   >("minutes");
   const [specificTime, setSpecificTime] = useState(new Date());
 
+  const [screenType, setScreenType] = useState<ScreenType>("home");
+
   return (
     <View style={{ gap: spacing[2] }}>
       <EventTiming
@@ -34,7 +37,7 @@ export const Unsplash = () => {
         setSpecificTime={setSpecificTime}
       />
       <USeparator />
-      <EventScreen />
+      <EventScreen screenType={screenType} setScreenType={setScreenType} />
     </View>
   );
 };
