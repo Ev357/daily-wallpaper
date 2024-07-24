@@ -12,7 +12,7 @@ import {
 } from "@/contexts/unsplashSettingsContext";
 import { Source } from "@/sources/types";
 import { spacing } from "@expo/styleguide-base";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ScrollView, View } from "react-native";
 
 export const unsplashSource: Source = {
