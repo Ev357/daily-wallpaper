@@ -1,11 +1,14 @@
 import EventScreen from "@/components/EventScreen";
 import EventTiming from "@/components/EventTiming";
+import { UPicker, UPickerItem } from "@/components/ui/picker";
 import { USeparator } from "@/components/ui/separator";
+import { UText } from "@/components/ui/text";
+import { UTextInput } from "@/components/ui/text-input";
 import type { ScreenType } from "@/constants/screenTypes";
 import { Source } from "@/sources/types";
 import { spacing } from "@expo/styleguide-base";
 import { useState } from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 export const unsplashSource: Source = {
   name: "unsplash",
@@ -25,19 +28,450 @@ export const Unsplash = () => {
   const [screenType, setScreenType] = useState<ScreenType>("home");
 
   return (
+    <ScrollView>
+      <View style={{ gap: spacing[2], paddingBottom: spacing[4] }}>
+        <EventTiming
+          triggerType={triggerType}
+          setTriggerType={setTriggerType}
+          interval={interval}
+          setInterval={setInterval}
+          intervalUnit={intervalUnit}
+          setIntervalUnit={setIntervalUnit}
+          specificTime={specificTime}
+          setSpecificTime={setSpecificTime}
+        />
+        <USeparator />
+        <EventScreen screenType={screenType} setScreenType={setScreenType} />
+        <USeparator />
+        <UnsplashSettings />
+      </View>
+    </ScrollView>
+  );
+};
+
+export const UnsplashSettings = () => {
+  const [sourceType, setSourceType] = useState<
+    "topics" | "search" | "collections" | "user" | "random" | "photo"
+  >("topics");
+
+  return (
     <View style={{ gap: spacing[2] }}>
-      <EventTiming
-        triggerType={triggerType}
-        setTriggerType={setTriggerType}
-        interval={interval}
-        setInterval={setInterval}
-        intervalUnit={intervalUnit}
-        setIntervalUnit={setIntervalUnit}
-        specificTime={specificTime}
-        setSpecificTime={setSpecificTime}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: spacing[2],
+        }}
+      >
+        <UText size="lg">Source:</UText>
+        <UPicker
+          selectedValue={sourceType}
+          onValueChange={(itemValue) => setSourceType(itemValue)}
+          mode="dropdown"
+          containerStyle={{
+            flexGrow: 1,
+          }}
+        >
+          <UPickerItem label="Topics" value="topics" />
+          <UPickerItem label="Search" value="search" />
+          <UPickerItem label="Collections" value="collections" />
+          <UPickerItem label="User Photos" value="user" />
+          <UPickerItem label="Random Photo" value="random" />
+          <UPickerItem label="Photo" value="photo" />
+        </UPicker>
+      </View>
+      {
+        {
+          topics: <UnsplashTopic />,
+          search: <UnsplashSearch />,
+          collections: <UnsplashCollection />,
+          user: <UnsplashUser />,
+          random: <UnsplashRandom />,
+          photo: <UnsplashPhoto />,
+        }[sourceType]
+      }
+    </View>
+  );
+};
+
+export const UnsplashTopic = () => {
+  const [orderBy, setOrderBy] = useState<"popular" | "latest" | "oldest">(
+    "popular"
+  );
+  const [topic, setTopic] = useState("");
+  const [orientation, setOrientation] = useState<
+    "portrait" | "landscape" | "squarish"
+  >("portrait");
+
+  return (
+    <View style={{ gap: spacing[2] }}>
+      <UText>Topic*</UText>
+      <UTextInput
+        placeholder="Id or slug"
+        value={topic}
+        onChangeText={(text) => setTopic(text.trim())}
       />
-      <USeparator />
-      <EventScreen screenType={screenType} setScreenType={setScreenType} />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: spacing[2],
+        }}
+      >
+        <UText>Order By:</UText>
+        <UPicker
+          selectedValue={orderBy}
+          onValueChange={(itemValue) => setOrderBy(itemValue)}
+          mode="dropdown"
+          containerStyle={{
+            flexGrow: 1,
+          }}
+        >
+          <UPickerItem label="Popular" value="popular" />
+          <UPickerItem label="Latest" value="latest" />
+          <UPickerItem label="Oldest" value="oldest" />
+        </UPicker>
+      </View>
+      <UnsplashOrientation
+        orientation={orientation}
+        setOrientation={setOrientation}
+      />
+    </View>
+  );
+};
+
+export const UnsplashSearch = () => {
+  const [query, setQuery] = useState("");
+  const [orderBy, setOrderBy] = useState<"latest" | "relevant">("latest");
+  const [collections, setCollections] = useState<string | undefined>(undefined);
+  const [color, setColor] = useState<
+    | "all"
+    | "black_and_white"
+    | "black"
+    | "white"
+    | "yellow"
+    | "orange"
+    | "red"
+    | "purple"
+    | "magenta"
+    | "green"
+    | "teal"
+    | "blue"
+  >("all");
+  const [orientation, setOrientation] = useState<
+    "portrait" | "landscape" | "all"
+  >("portrait");
+
+  return (
+    <View style={{ gap: spacing[2] }}>
+      <UnsplashQuery query={query} setQuery={setQuery} />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: spacing[2],
+        }}
+      >
+        <UText>Order by:</UText>
+        <UPicker
+          selectedValue={orderBy}
+          onValueChange={(itemValue) => setOrderBy(itemValue)}
+          mode="dropdown"
+          containerStyle={{
+            flexGrow: 1,
+          }}
+        >
+          <UPickerItem label="Latest" value="latest" />
+          <UPickerItem label="Relevant" value="relevant" />
+        </UPicker>
+      </View>
+      <UnsplashCollections
+        collections={collections}
+        setCollections={setCollections}
+      />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: spacing[2],
+        }}
+      >
+        <UText>Color:</UText>
+        <UPicker
+          selectedValue={color}
+          onValueChange={(itemValue) => setColor(itemValue)}
+          mode="dropdown"
+          containerStyle={{
+            flexGrow: 1,
+          }}
+        >
+          <UPickerItem label="All" value="all" />
+          <UPickerItem label="Black and White" value="black_and_white" />
+          <UPickerItem label="Black" value="black" />
+          <UPickerItem label="White" value="white" />
+          <UPickerItem label="Yellow" value="yellow" />
+          <UPickerItem label="Orange" value="orange" />
+          <UPickerItem label="Red" value="red" />
+          <UPickerItem label="Purple" value="purple" />
+          <UPickerItem label="Magenta" value="magenta" />
+          <UPickerItem label="Green" value="green" />
+          <UPickerItem label="Teal" value="teal" />
+          <UPickerItem label="Blue" value="blue" />
+        </UPicker>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: spacing[2],
+        }}
+      >
+        <UText>Orientation:</UText>
+        <UPicker
+          selectedValue={orientation}
+          onValueChange={(itemValue) => setOrientation(itemValue)}
+          mode="dropdown"
+          containerStyle={{
+            flexGrow: 1,
+          }}
+        >
+          <UPickerItem label="Portrait" value="portrait" />
+          <UPickerItem label="Landscape" value="landscape" />
+          <UPickerItem label="All" value="all" />
+        </UPicker>
+      </View>
+    </View>
+  );
+};
+
+export const UnsplashOrientation = ({
+  orientation,
+  setOrientation,
+}: {
+  orientation: "portrait" | "landscape" | "squarish";
+  setOrientation: (value: "portrait" | "landscape" | "squarish") => void;
+}) => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        gap: spacing[2],
+      }}
+    >
+      <UText>Orientation:</UText>
+      <UPicker
+        selectedValue={orientation}
+        onValueChange={(itemValue) => setOrientation(itemValue)}
+        mode="dropdown"
+        containerStyle={{
+          flexGrow: 1,
+        }}
+      >
+        <UPickerItem label="Portrait" value="portrait" />
+        <UPickerItem label="Landscape" value="landscape" />
+        <UPickerItem label="Squarish" value="squarish" />
+      </UPicker>
+    </View>
+  );
+};
+
+export const UnsplashQuery = ({
+  query,
+  setQuery,
+  optional = false,
+}:
+  | {
+      query: string;
+      setQuery: (value: string) => void;
+      optional?: false;
+    }
+  | {
+      query: string | undefined;
+      setQuery: (value: string | undefined) => void;
+      optional: true;
+    }) => {
+  return (
+    <View style={{ gap: spacing[2] }}>
+      <UText>Query{!optional ? "*" : ""}</UText>
+      <UTextInput
+        placeholder="Query"
+        value={query}
+        onChangeText={(text) =>
+          (
+            setQuery as typeof optional extends false
+              ? (value: string) => void
+              : (value: string | undefined) => void
+          )(!optional ? text.trim() : text.trim() || undefined)
+        }
+      />
+    </View>
+  );
+};
+
+export const UnsplashCollections = ({
+  collections,
+  setCollections,
+}: {
+  collections: string | undefined;
+  setCollections: (value: string | undefined) => void;
+}) => {
+  return (
+    <View style={{ gap: spacing[2] }}>
+      <UText>Collections</UText>
+      <UTextInput
+        placeholder="Collection ID(s), comma-separated"
+        value={collections}
+        onChangeText={(text) => setCollections(text.trim() || undefined)}
+      />
+    </View>
+  );
+};
+
+export const UnsplashCollection = () => {
+  const [collectionId, setCollectionId] = useState<string>("");
+  const [orientation, setOrientation] = useState<
+    "portrait" | "landscape" | "squarish"
+  >("portrait");
+
+  return (
+    <View style={{ gap: spacing[2] }}>
+      <UText>Collection ID*</UText>
+      <UTextInput
+        placeholder="Collection ID"
+        value={collectionId}
+        onChangeText={(text) => setCollectionId(text.trim())}
+      />
+      <UnsplashOrientation
+        orientation={orientation}
+        setOrientation={setOrientation}
+      />
+    </View>
+  );
+};
+
+export const UnsplashUser = () => {
+  const [username, setUsername] = useState<string>("");
+  const [orderBy, setOrderBy] = useState<
+    "popular" | "latest" | "views" | "downloads" | "oldest"
+  >("popular");
+  const [orientation, setOrientation] = useState<
+    "portrait" | "landscape" | "squarish"
+  >("portrait");
+
+  return (
+    <View style={{ gap: spacing[2] }}>
+      <UnsplashUsername username={username} setUsername={setUsername} />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: spacing[2],
+        }}
+      >
+        <UText>Order by:</UText>
+        <UPicker
+          selectedValue={orderBy}
+          onValueChange={(itemValue) => setOrderBy(itemValue)}
+          mode="dropdown"
+          containerStyle={{
+            flexGrow: 1,
+          }}
+        >
+          <UPickerItem label="Popular" value="popular" />
+          <UPickerItem label="Latest" value="latest" />
+          <UPickerItem label="Views" value="views" />
+          <UPickerItem label="Downloads" value="downloads" />
+          <UPickerItem label="Oldest" value="oldest" />
+        </UPicker>
+      </View>
+      <UnsplashOrientation
+        orientation={orientation}
+        setOrientation={setOrientation}
+      />
+    </View>
+  );
+};
+
+export const UnsplashUsername = ({
+  username,
+  setUsername,
+  optional = false,
+}:
+  | {
+      username: string;
+      setUsername: (value: string) => void;
+      optional?: false;
+    }
+  | {
+      username: string | undefined;
+      setUsername: (value: string | undefined) => void;
+      optional: true;
+    }) => {
+  return (
+    <View style={{ gap: spacing[2] }}>
+      <UText>Username{!optional ? "*" : ""}</UText>
+      <UTextInput
+        placeholder="Username"
+        value={username}
+        onChangeText={(text) =>
+          (
+            setUsername as typeof optional extends false
+              ? (value: string) => void
+              : (value: string | undefined) => void
+          )(!optional ? text.trim() : text.trim() || undefined)
+        }
+      />
+    </View>
+  );
+};
+
+export const UnsplashRandom = () => {
+  const [collections, setCollections] = useState<string | undefined>(undefined);
+  const [topics, setTopics] = useState<string | undefined>(undefined);
+  const [username, setUsername] = useState<string | undefined>(undefined);
+  const [query, setQuery] = useState<string | undefined>("");
+  const [orientation, setOrientation] = useState<
+    "portrait" | "landscape" | "squarish"
+  >("portrait");
+
+  return (
+    <View style={{ gap: spacing[2] }}>
+      <UnsplashCollections
+        collections={collections}
+        setCollections={setCollections}
+      />
+      <UText>Topics:</UText>
+      <UTextInput
+        placeholder="Topic ID(s), comma-separated"
+        value={topics}
+        onChangeText={(text) => setTopics(text.trim() || undefined)}
+      />
+      <UnsplashUsername
+        username={username}
+        setUsername={setUsername}
+        optional
+      />
+      <UnsplashQuery query={query} setQuery={setQuery} optional />
+      <UnsplashOrientation
+        orientation={orientation}
+        setOrientation={setOrientation}
+      />
+    </View>
+  );
+};
+
+export const UnsplashPhoto = () => {
+  const [photoId, setPhotoId] = useState<string>("");
+
+  return (
+    <View style={{ gap: spacing[2] }}>
+      <UText>Photo ID*</UText>
+      <UTextInput
+        placeholder="Photo ID"
+        value={photoId}
+        onChangeText={(text) => setPhotoId(text.trim())}
+      />
     </View>
   );
 };
