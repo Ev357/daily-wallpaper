@@ -87,7 +87,7 @@ const SourceTiming = () => {
           </UPicker>
         </View>
       ) : (
-        <UButton onPress={getDateTime}>
+        <UButton onPress={getDateTime} variant="outline">
           <UText>{getFormattedTime(source.specificTime)}</UText>
         </UButton>
       )}

@@ -1,5 +1,6 @@
 import SourceScreen from "@/components/SourceScreen";
 import SourceTiming from "@/components/SourceTiming";
+import { UButton } from "@/components/ui/button";
 import { UPicker, UPickerItem } from "@/components/ui/picker";
 import { USeparator } from "@/components/ui/separator";
 import { UText } from "@/components/ui/text";
@@ -11,6 +12,7 @@ import {
   UnsplashSettingsContextProvider,
   useUnsplashSettings,
 } from "@/contexts/unsplashSettingsContext";
+import { useColors } from "@/hooks/useColors";
 import { Source } from "@/sources/types";
 import { spacing } from "@expo/styleguide-base";
 import { ScrollView, View } from "react-native";
@@ -21,6 +23,8 @@ export const unsplashSource: Source = {
 };
 
 export const Unsplash = () => {
+  const colors = useColors();
+
   return (
     <ScrollView>
       <View style={{ gap: spacing[2], paddingBottom: spacing[4] }}>
@@ -33,6 +37,13 @@ export const Unsplash = () => {
         <UnsplashSettingsContextProvider>
           <UnsplashSettings />
         </UnsplashSettingsContextProvider>
+        <UButton>
+          <UText
+            style={{ color: colors.primaryForeground, textAlign: "center" }}
+          >
+            Save
+          </UText>
+        </UButton>
       </View>
     </ScrollView>
   );
