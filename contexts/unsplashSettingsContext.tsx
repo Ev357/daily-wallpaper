@@ -388,7 +388,7 @@ export const UnsplashSettingsContextProvider = ({
     sourceType: "topics",
     settings: {
       topic: {
-        topic: "",
+        topic: "wallpapers",
         orderBy: "popular",
         orientation: "portrait",
       },
