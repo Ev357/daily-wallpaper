@@ -1,10 +1,10 @@
-import EventScreen from "@/components/EventScreen";
-import EventTiming from "@/components/EventTiming";
+import SourceScreen from "@/components/SourceScreen";
+import SourceTiming from "@/components/SourceTiming";
 import { UPicker, UPickerItem } from "@/components/ui/picker";
 import { USeparator } from "@/components/ui/separator";
 import { UText } from "@/components/ui/text";
 import { UTextInput } from "@/components/ui/text-input";
-import type { ScreenType } from "@/constants/screenTypes";
+import { SourceContextProvider } from "@/contexts/sourceContext";
 import {
   type UnsplashOrientation as UnsplashOrientationType,
   UnsplashSettingsContextProvider,
@@ -12,7 +12,6 @@ import {
 } from "@/contexts/unsplashSettingsContext";
 import { Source } from "@/sources/types";
 import { spacing } from "@expo/styleguide-base";
-import { useState } from "react";
 import { ScrollView, View } from "react-native";
 
 export const unsplashSource: Source = {
@@ -21,31 +20,14 @@ export const unsplashSource: Source = {
 };
 
 export const Unsplash = () => {
-  const [triggerType, setTriggerType] = useState<"periodic" | "specificTime">(
-    "specificTime"
-  );
-  const [interval, setInterval] = useState(15);
-  const [intervalUnit, setIntervalUnit] = useState<
-    "seconds" | "minutes" | "hours" | "days"
-  >("minutes");
-  const [specificTime, setSpecificTime] = useState(new Date());
-  const [screenType, setScreenType] = useState<ScreenType>("home");
-
   return (
     <ScrollView>
       <View style={{ gap: spacing[2], paddingBottom: spacing[4] }}>
-        <EventTiming
-          triggerType={triggerType}
-          setTriggerType={setTriggerType}
-          interval={interval}
-          setInterval={setInterval}
-          intervalUnit={intervalUnit}
-          setIntervalUnit={setIntervalUnit}
-          specificTime={specificTime}
-          setSpecificTime={setSpecificTime}
-        />
-        <USeparator />
-        <EventScreen screenType={screenType} setScreenType={setScreenType} />
+        <SourceContextProvider>
+          <SourceTiming />
+          <USeparator />
+          <SourceScreen />
+        </SourceContextProvider>
         <USeparator />
         <UnsplashSettingsContextProvider>
           <UnsplashSettings />
@@ -70,9 +52,9 @@ export const UnsplashSettings = () => {
         <UText size="lg">Source:</UText>
         <UPicker
           selectedValue={settings.sourceType}
-          onValueChange={(itemValue) =>
-            dispatchSettings({ type: "setSourceType", sourceType: itemValue })
-          }
+          onValueChange={(itemValue) => {
+            dispatchSettings({ type: "setSourceType", sourceType: itemValue });
+          }}
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -109,9 +91,9 @@ export const UnsplashTopic = () => {
       <UTextInput
         placeholder="Id or slug"
         value={settings.settings.topic.topic}
-        onChangeText={(text) =>
-          dispatchSettings({ type: "setTopicTopic", topic: text.trim() })
-        }
+        onChangeText={(text) => {
+          dispatchSettings({ type: "setTopicTopic", topic: text.trim() });
+        }}
       />
       <View
         style={{
@@ -123,9 +105,9 @@ export const UnsplashTopic = () => {
         <UText>Order By:</UText>
         <UPicker
           selectedValue={settings.settings.topic.orderBy}
-          onValueChange={(itemValue) =>
-            dispatchSettings({ type: "setTopicOrderBy", orderBy: itemValue })
-          }
+          onValueChange={(itemValue) => {
+            dispatchSettings({ type: "setTopicOrderBy", orderBy: itemValue });
+          }}
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -138,9 +120,9 @@ export const UnsplashTopic = () => {
       </View>
       <UnsplashOrientation
         orientation={settings.settings.topic.orientation}
-        setOrientation={(orientation) =>
-          dispatchSettings({ type: "setTopicOrientation", orientation })
-        }
+        setOrientation={(orientation) => {
+          dispatchSettings({ type: "setTopicOrientation", orientation });
+        }}
       />
     </View>
   );
@@ -153,9 +135,9 @@ export const UnsplashSearch = () => {
     <View style={{ gap: spacing[2] }}>
       <UnsplashQuery
         query={settings.settings.search.query}
-        setQuery={(query) =>
-          dispatchSettings({ type: "setSearchQuery", query })
-        }
+        setQuery={(query) => {
+          dispatchSettings({ type: "setSearchQuery", query });
+        }}
       />
       <View
         style={{
@@ -167,9 +149,9 @@ export const UnsplashSearch = () => {
         <UText>Order by:</UText>
         <UPicker
           selectedValue={settings.settings.search.orderBy}
-          onValueChange={(itemValue) =>
-            dispatchSettings({ type: "setSearchOrderBy", orderBy: itemValue })
-          }
+          onValueChange={(itemValue) => {
+            dispatchSettings({ type: "setSearchOrderBy", orderBy: itemValue });
+          }}
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -181,9 +163,9 @@ export const UnsplashSearch = () => {
       </View>
       <UnsplashCollections
         collections={settings.settings.search.collections}
-        setCollections={(collections) =>
-          dispatchSettings({ type: "setSearchCollections", collections })
-        }
+        setCollections={(collections) => {
+          dispatchSettings({ type: "setSearchCollections", collections });
+        }}
       />
       <View
         style={{
@@ -195,9 +177,9 @@ export const UnsplashSearch = () => {
         <UText>Color:</UText>
         <UPicker
           selectedValue={settings.settings.search.color}
-          onValueChange={(itemValue) =>
-            dispatchSettings({ type: "setSearchColor", color: itemValue })
-          }
+          onValueChange={(itemValue) => {
+            dispatchSettings({ type: "setSearchColor", color: itemValue });
+          }}
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -227,12 +209,12 @@ export const UnsplashSearch = () => {
         <UText>Orientation:</UText>
         <UPicker
           selectedValue={settings.settings.search.orientation}
-          onValueChange={(itemValue) =>
+          onValueChange={(itemValue) => {
             dispatchSettings({
               type: "setSearchOrientation",
               orientation: itemValue,
-            })
-          }
+            });
+          }}
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -265,7 +247,9 @@ export const UnsplashOrientation = ({
       <UText>Orientation:</UText>
       <UPicker
         selectedValue={orientation}
-        onValueChange={(itemValue) => setOrientation(itemValue)}
+        onValueChange={(itemValue) => {
+          setOrientation(itemValue);
+        }}
         mode="dropdown"
         containerStyle={{
           flexGrow: 1,
@@ -300,13 +284,13 @@ export const UnsplashQuery = ({
       <UTextInput
         placeholder="Query"
         value={query}
-        onChangeText={(text) =>
+        onChangeText={(text) => {
           (
             setQuery as typeof optional extends false
               ? (value: string) => void
               : (value: string | undefined) => void
-          )(!optional ? text.trim() : text.trim() || undefined)
-        }
+          )(!optional ? text.trim() : text.trim() || undefined);
+        }}
       />
     </View>
   );
@@ -325,7 +309,9 @@ export const UnsplashCollections = ({
       <UTextInput
         placeholder="Collection ID(s), comma-separated"
         value={collections}
-        onChangeText={(text) => setCollections(text.trim() || undefined)}
+        onChangeText={(text) => {
+          setCollections(text.trim() || undefined);
+        }}
       />
     </View>
   );
@@ -340,18 +326,18 @@ export const UnsplashCollection = () => {
       <UTextInput
         placeholder="Collection ID"
         value={settings.settings.collections.collectionId}
-        onChangeText={(text) =>
+        onChangeText={(text) => {
           dispatchSettings({
             type: "setCollectionCollectionId",
             collectionId: text.trim(),
-          })
-        }
+          });
+        }}
       />
       <UnsplashOrientation
         orientation={settings.settings.collections.orientation}
-        setOrientation={(orientation) =>
-          dispatchSettings({ type: "setCollectionOrientation", orientation })
-        }
+        setOrientation={(orientation) => {
+          dispatchSettings({ type: "setCollectionOrientation", orientation });
+        }}
       />
     </View>
   );
@@ -364,9 +350,9 @@ export const UnsplashUser = () => {
     <View style={{ gap: spacing[2] }}>
       <UnsplashUsername
         username={settings.settings.user.username}
-        setUsername={(username) =>
-          dispatchSettings({ type: "setUserUsername", username })
-        }
+        setUsername={(username) => {
+          dispatchSettings({ type: "setUserUsername", username });
+        }}
       />
       <View
         style={{
@@ -378,9 +364,9 @@ export const UnsplashUser = () => {
         <UText>Order by:</UText>
         <UPicker
           selectedValue={settings.settings.user.orderBy}
-          onValueChange={(itemValue) =>
-            dispatchSettings({ type: "setUserOrderBy", orderBy: itemValue })
-          }
+          onValueChange={(itemValue) => {
+            dispatchSettings({ type: "setUserOrderBy", orderBy: itemValue });
+          }}
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -395,9 +381,9 @@ export const UnsplashUser = () => {
       </View>
       <UnsplashOrientation
         orientation={settings.settings.user.orientation}
-        setOrientation={(orientation) =>
-          dispatchSettings({ type: "setUserOrientation", orientation })
-        }
+        setOrientation={(orientation) => {
+          dispatchSettings({ type: "setUserOrientation", orientation });
+        }}
       />
     </View>
   );
@@ -424,13 +410,13 @@ export const UnsplashUsername = ({
       <UTextInput
         placeholder="Username"
         value={username}
-        onChangeText={(text) =>
+        onChangeText={(text) => {
           (
             setUsername as typeof optional extends false
               ? (value: string) => void
               : (value: string | undefined) => void
-          )(!optional ? text.trim() : text.trim() || undefined)
-        }
+          )(!optional ? text.trim() : text.trim() || undefined);
+        }}
       />
     </View>
   );
@@ -443,40 +429,40 @@ export const UnsplashRandom = () => {
     <View style={{ gap: spacing[2] }}>
       <UnsplashCollections
         collections={settings.settings.random.collections}
-        setCollections={(collections) =>
-          dispatchSettings({ type: "setRandomCollections", collections })
-        }
+        setCollections={(collections) => {
+          dispatchSettings({ type: "setRandomCollections", collections });
+        }}
       />
       <UText>Topics:</UText>
       <UTextInput
         placeholder="Topic ID(s), comma-separated"
         value={settings.settings.random.topics}
-        onChangeText={(text) =>
+        onChangeText={(text) => {
           dispatchSettings({
             type: "setRandomTopics",
             topics: text.trim() || undefined,
-          })
-        }
+          });
+        }}
       />
       <UnsplashUsername
         username={settings.settings.random.username}
-        setUsername={(username) =>
-          dispatchSettings({ type: "setRandomUsername", username })
-        }
+        setUsername={(username) => {
+          dispatchSettings({ type: "setRandomUsername", username });
+        }}
         optional
       />
       <UnsplashQuery
         query={settings.settings.random.query}
-        setQuery={(query) =>
-          dispatchSettings({ type: "setRandomQuery", query })
-        }
+        setQuery={(query) => {
+          dispatchSettings({ type: "setRandomQuery", query });
+        }}
         optional
       />
       <UnsplashOrientation
         orientation={settings.settings.random.orientation}
-        setOrientation={(orientation) =>
-          dispatchSettings({ type: "setRandomOrientation", orientation })
-        }
+        setOrientation={(orientation) => {
+          dispatchSettings({ type: "setRandomOrientation", orientation });
+        }}
       />
     </View>
   );
@@ -491,9 +477,9 @@ export const UnsplashPhoto = () => {
       <UTextInput
         placeholder="Photo ID"
         value={settings.settings.photo.photoId}
-        onChangeText={(text) =>
-          dispatchSettings({ type: "setPhotoPhotoId", photoId: text.trim() })
-        }
+        onChangeText={(text) => {
+          dispatchSettings({ type: "setPhotoPhotoId", photoId: text.trim() });
+        }}
       />
     </View>
   );

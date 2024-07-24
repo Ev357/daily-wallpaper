@@ -6,33 +6,23 @@ import { getFormattedTime } from "@/utils/getFormattedTime";
 import { spacing } from "@expo/styleguide-base";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { View } from "react-native";
+import { useSourceContext } from "@/contexts/sourceContext";
 
-const EventTiming = ({
-  triggerType,
-  setTriggerType,
-  interval,
-  setInterval,
-  intervalUnit,
-  setIntervalUnit,
-  specificTime,
-  setSpecificTime,
-}: {
-  triggerType: "periodic" | "specificTime";
-  setTriggerType: (value: "periodic" | "specificTime") => void;
-  interval: number;
-  setInterval: (value: number) => void;
-  intervalUnit: "seconds" | "minutes" | "hours" | "days";
-  setIntervalUnit: (value: "seconds" | "minutes" | "hours" | "days") => void;
-  specificTime: Date;
-  setSpecificTime: (value: Date) => void;
-}) => {
+const SourceTiming = () => {
+  const { source, dispatchSource } = useSourceContext();
+
   const getDateTime = () => {
     DateTimePickerAndroid.open({
       mode: "time",
-      value: specificTime,
+      value: source.specificTime,
       is24Hour: true,
       onChange: (_, selectedTime) => {
-        setSpecificTime(selectedTime ?? specificTime);
+        if (!selectedTime) return;
+
+        dispatchSource({
+          type: "setSpecificTime",
+          specificTime: selectedTime,
+        });
       },
     });
   };
@@ -46,11 +36,12 @@ const EventTiming = ({
           gap: spacing[2],
         }}
       >
-        <UText size="lg">Trigger Type:</UText>
-
+        <UText size="lg">Trigger Type</UText>
         <UPicker
-          selectedValue={triggerType}
-          onValueChange={(itemValue) => setTriggerType(itemValue)}
+          selectedValue={source.triggerType}
+          onValueChange={(itemValue) => {
+            dispatchSource({ type: "setTriggerType", triggerType: itemValue });
+          }}
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -61,19 +52,29 @@ const EventTiming = ({
         </UPicker>
       </View>
 
-      {triggerType === "periodic" ? (
+      {source.triggerType === "periodic" ? (
         <View style={{ flexDirection: "row", gap: spacing[2] }}>
           <UTextInput
             keyboardType="numeric"
-            value={String(interval)}
-            onChangeText={(text) => setInterval(Number(text))}
+            value={String(source.periodic.interval)}
+            onChangeText={(text) => {
+              dispatchSource({
+                type: "setInterval",
+                interval: Number(text),
+              });
+            }}
             maxLength={10}
             style={{ flexGrow: 1 }}
           />
 
           <UPicker
-            selectedValue={intervalUnit}
-            onValueChange={(itemValue) => setIntervalUnit(itemValue)}
+            selectedValue={source.periodic.intervalUnit}
+            onValueChange={(itemValue) => {
+              dispatchSource({
+                type: "setIntervalUnit",
+                intervalUnit: itemValue,
+              });
+            }}
             mode="dropdown"
             containerStyle={{
               width: spacing[24],
@@ -87,11 +88,11 @@ const EventTiming = ({
         </View>
       ) : (
         <UButton onPress={getDateTime}>
-          <UText>{getFormattedTime(specificTime)}</UText>
+          <UText>{getFormattedTime(source.specificTime)}</UText>
         </UButton>
       )}
     </View>
   );
 };
 
-export default EventTiming;
+export default SourceTiming;
