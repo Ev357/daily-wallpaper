@@ -5,6 +5,11 @@ import { USeparator } from "@/components/ui/separator";
 import { UText } from "@/components/ui/text";
 import { UTextInput } from "@/components/ui/text-input";
 import type { ScreenType } from "@/constants/screenTypes";
+import {
+  type UnsplashOrientation as UnsplashOrientationType,
+  UnsplashSettingsContextProvider,
+  useUnsplashSettings,
+} from "@/contexts/unsplashSettingsContext";
 import { Source } from "@/sources/types";
 import { spacing } from "@expo/styleguide-base";
 import { useEffect, useState } from "react";
@@ -26,13 +31,6 @@ export const Unsplash = () => {
   const [specificTime, setSpecificTime] = useState(new Date());
   const [screenType, setScreenType] = useState<ScreenType>("home");
 
-  const [settings, setSettings] = useState<Settings>({
-    type: "topic",
-    topic: "",
-    orderBy: "popular",
-    orientation: "portrait",
-  });
-
   return (
     <ScrollView>
       <View style={{ gap: spacing[2], paddingBottom: spacing[4] }}>
@@ -49,75 +47,16 @@ export const Unsplash = () => {
         <USeparator />
         <EventScreen screenType={screenType} setScreenType={setScreenType} />
         <USeparator />
-        <UnsplashSettings setSettings={setSettings} />
+        <UnsplashSettingsContextProvider>
+          <UnsplashSettings />
+        </UnsplashSettingsContextProvider>
       </View>
     </ScrollView>
   );
 };
 
-export type UnsplashOrientation = "portrait" | "landscape" | "squarish";
-
-export type UnsplashColor =
-  | "all"
-  | "black_and_white"
-  | "black"
-  | "white"
-  | "yellow"
-  | "orange"
-  | "red"
-  | "purple"
-  | "magenta"
-  | "green"
-  | "teal"
-  | "blue";
-
-export type Settings =
-  | {
-      type: "topic";
-      topic: string;
-      orderBy: "popular" | "latest" | "oldest";
-      orientation: UnsplashOrientation;
-    }
-  | {
-      type: "search";
-      query: string;
-      orderBy: "latest" | "relevant";
-      collections: string | undefined;
-      color: UnsplashColor;
-      orientation: "portrait" | "landscape" | "all";
-    }
-  | {
-      type: "collections";
-      collectionId: string;
-      orientation: UnsplashOrientation;
-    }
-  | {
-      type: "user";
-      username: string;
-      orderBy: "popular" | "latest" | "views" | "downloads" | "oldest";
-      orientation: UnsplashOrientation;
-    }
-  | {
-      type: "random";
-      collections: string | undefined;
-      topics: string | undefined;
-      username: string | undefined;
-      query: string | undefined;
-      orientation: UnsplashOrientation;
-    }
-  | {
-      type: "photo";
-      photoId: string;
-    };
-
-export const UnsplashSettings = ({
-  setSettings,
-}: {
-  setSettings: (value: Settings) => void;
-}) => {
-  const [sourceType, setSourceType] = useState<
-    "topics" | "search" | "collections" | "user" | "random" | "photo"
-  >("topics");
+export const UnsplashSettings = () => {
+  const { settings, dispatchSettings } = useUnsplashSettings();
 
   return (
     <View style={{ gap: spacing[2] }}>
@@ -130,8 +69,10 @@ export const UnsplashSettings = ({
       >
         <UText size="lg">Source:</UText>
         <UPicker
-          selectedValue={sourceType}
-          onValueChange={(itemValue) => setSourceType(itemValue)}
+          selectedValue={settings.sourceType}
+          onValueChange={(itemValue) =>
+            dispatchSettings({ type: "setSourceType", sourceType: itemValue })
+          }
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -147,46 +88,30 @@ export const UnsplashSettings = ({
       </View>
       {
         {
-          topics: <UnsplashTopic setSettings={setSettings} />,
-          search: <UnsplashSearch setSettings={setSettings} />,
-          collections: <UnsplashCollection setSettings={setSettings} />,
-          user: <UnsplashUser setSettings={setSettings} />,
-          random: <UnsplashRandom setSettings={setSettings} />,
-          photo: <UnsplashPhoto setSettings={setSettings} />,
-        }[sourceType]
+          topics: <UnsplashTopic />,
+          search: <UnsplashSearch />,
+          collections: <UnsplashCollection />,
+          user: <UnsplashUser />,
+          random: <UnsplashRandom />,
+          photo: <UnsplashPhoto />,
+        }[settings.sourceType]
       }
     </View>
   );
 };
 
-export const UnsplashTopic = ({
-  setSettings,
-}: {
-  setSettings: (value: Settings) => void;
-}) => {
-  const [topic, setTopic] = useState("");
-  const [orderBy, setOrderBy] = useState<"popular" | "latest" | "oldest">(
-    "popular"
-  );
-  const [orientation, setOrientation] =
-    useState<UnsplashOrientation>("portrait");
-
-  useEffect(() => {
-    setSettings({
-      type: "topic",
-      topic,
-      orderBy,
-      orientation,
-    });
-  }, [topic, orderBy, orientation]);
+export const UnsplashTopic = () => {
+  const { settings, dispatchSettings } = useUnsplashSettings();
 
   return (
     <View style={{ gap: spacing[2] }}>
       <UText>Topic*</UText>
       <UTextInput
         placeholder="Id or slug"
-        value={topic}
-        onChangeText={(text) => setTopic(text.trim())}
+        value={settings.settings.topic.topic}
+        onChangeText={(text) =>
+          dispatchSettings({ type: "setTopicTopic", topic: text.trim() })
+        }
       />
       <View
         style={{
@@ -197,8 +122,10 @@ export const UnsplashTopic = ({
       >
         <UText>Order By:</UText>
         <UPicker
-          selectedValue={orderBy}
-          onValueChange={(itemValue) => setOrderBy(itemValue)}
+          selectedValue={settings.settings.topic.orderBy}
+          onValueChange={(itemValue) =>
+            dispatchSettings({ type: "setTopicOrderBy", orderBy: itemValue })
+          }
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -210,40 +137,26 @@ export const UnsplashTopic = ({
         </UPicker>
       </View>
       <UnsplashOrientation
-        orientation={orientation}
-        setOrientation={setOrientation}
+        orientation={settings.settings.topic.orientation}
+        setOrientation={(orientation) =>
+          dispatchSettings({ type: "setTopicOrientation", orientation })
+        }
       />
     </View>
   );
 };
 
-export const UnsplashSearch = ({
-  setSettings,
-}: {
-  setSettings: (value: Settings) => void;
-}) => {
-  const [query, setQuery] = useState("");
-  const [orderBy, setOrderBy] = useState<"latest" | "relevant">("latest");
-  const [collections, setCollections] = useState<string | undefined>(undefined);
-  const [color, setColor] = useState<UnsplashColor>("all");
-  const [orientation, setOrientation] = useState<
-    "portrait" | "landscape" | "all"
-  >("portrait");
-
-  useEffect(() => {
-    setSettings({
-      type: "search",
-      query,
-      orderBy,
-      collections,
-      color,
-      orientation,
-    });
-  }, [query, orderBy, collections, color, orientation]);
+export const UnsplashSearch = () => {
+  const { settings, dispatchSettings } = useUnsplashSettings();
 
   return (
     <View style={{ gap: spacing[2] }}>
-      <UnsplashQuery query={query} setQuery={setQuery} />
+      <UnsplashQuery
+        query={settings.settings.search.query}
+        setQuery={(query) =>
+          dispatchSettings({ type: "setSerachQuery", query })
+        }
+      />
       <View
         style={{
           flexDirection: "row",
@@ -253,8 +166,10 @@ export const UnsplashSearch = ({
       >
         <UText>Order by:</UText>
         <UPicker
-          selectedValue={orderBy}
-          onValueChange={(itemValue) => setOrderBy(itemValue)}
+          selectedValue={settings.settings.search.orderBy}
+          onValueChange={(itemValue) =>
+            dispatchSettings({ type: "setSerachOrderBy", orderBy: itemValue })
+          }
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -265,8 +180,10 @@ export const UnsplashSearch = ({
         </UPicker>
       </View>
       <UnsplashCollections
-        collections={collections}
-        setCollections={setCollections}
+        collections={settings.settings.search.collections}
+        setCollections={(collections) =>
+          dispatchSettings({ type: "setSerachCollections", collections })
+        }
       />
       <View
         style={{
@@ -277,8 +194,10 @@ export const UnsplashSearch = ({
       >
         <UText>Color:</UText>
         <UPicker
-          selectedValue={color}
-          onValueChange={(itemValue) => setColor(itemValue)}
+          selectedValue={settings.settings.search.color}
+          onValueChange={(itemValue) =>
+            dispatchSettings({ type: "setSerachColor", color: itemValue })
+          }
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -307,8 +226,13 @@ export const UnsplashSearch = ({
       >
         <UText>Orientation:</UText>
         <UPicker
-          selectedValue={orientation}
-          onValueChange={(itemValue) => setOrientation(itemValue)}
+          selectedValue={settings.settings.search.orientation}
+          onValueChange={(itemValue) =>
+            dispatchSettings({
+              type: "setSerachOrientation",
+              orientation: itemValue,
+            })
+          }
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -327,8 +251,8 @@ export const UnsplashOrientation = ({
   orientation,
   setOrientation,
 }: {
-  orientation: UnsplashOrientation;
-  setOrientation: (value: UnsplashOrientation) => void;
+  orientation: UnsplashOrientationType;
+  setOrientation: (value: UnsplashOrientationType) => void;
 }) => {
   return (
     <View
@@ -407,63 +331,43 @@ export const UnsplashCollections = ({
   );
 };
 
-export const UnsplashCollection = ({
-  setSettings,
-}: {
-  setSettings: (value: Settings) => void;
-}) => {
-  const [collectionId, setCollectionId] = useState<string>("");
-  const [orientation, setOrientation] =
-    useState<UnsplashOrientation>("portrait");
-
-  useEffect(() => {
-    setSettings({
-      type: "collections",
-      collectionId,
-      orientation,
-    });
-  }, [collectionId, orientation]);
+export const UnsplashCollection = () => {
+  const { settings, dispatchSettings } = useUnsplashSettings();
 
   return (
     <View style={{ gap: spacing[2] }}>
       <UText>Collection ID*</UText>
       <UTextInput
         placeholder="Collection ID"
-        value={collectionId}
-        onChangeText={(text) => setCollectionId(text.trim())}
+        value={settings.settings.collections.collectionId}
+        onChangeText={(text) =>
+          dispatchSettings({
+            type: "setCollectionCollectionId",
+            collectionId: text.trim(),
+          })
+        }
       />
       <UnsplashOrientation
-        orientation={orientation}
-        setOrientation={setOrientation}
+        orientation={settings.settings.collections.orientation}
+        setOrientation={(orientation) =>
+          dispatchSettings({ type: "setCollectionOrientation", orientation })
+        }
       />
     </View>
   );
 };
 
-export const UnsplashUser = ({
-  setSettings,
-}: {
-  setSettings: (value: Settings) => void;
-}) => {
-  const [username, setUsername] = useState<string>("");
-  const [orderBy, setOrderBy] = useState<
-    "popular" | "latest" | "views" | "downloads" | "oldest"
-  >("popular");
-  const [orientation, setOrientation] =
-    useState<UnsplashOrientation>("portrait");
-
-  useEffect(() => {
-    setSettings({
-      type: "user",
-      username,
-      orderBy,
-      orientation,
-    });
-  }, [username, orderBy, orientation]);
+export const UnsplashUser = () => {
+  const { settings, dispatchSettings } = useUnsplashSettings();
 
   return (
     <View style={{ gap: spacing[2] }}>
-      <UnsplashUsername username={username} setUsername={setUsername} />
+      <UnsplashUsername
+        username={settings.settings.user.username}
+        setUsername={(username) =>
+          dispatchSettings({ type: "setUserUsername", username })
+        }
+      />
       <View
         style={{
           flexDirection: "row",
@@ -473,8 +377,10 @@ export const UnsplashUser = ({
       >
         <UText>Order by:</UText>
         <UPicker
-          selectedValue={orderBy}
-          onValueChange={(itemValue) => setOrderBy(itemValue)}
+          selectedValue={settings.settings.user.orderBy}
+          onValueChange={(itemValue) =>
+            dispatchSettings({ type: "setUserOrderBy", orderBy: itemValue })
+          }
           mode="dropdown"
           containerStyle={{
             flexGrow: 1,
@@ -488,8 +394,10 @@ export const UnsplashUser = ({
         </UPicker>
       </View>
       <UnsplashOrientation
-        orientation={orientation}
-        setOrientation={setOrientation}
+        orientation={settings.settings.user.orientation}
+        setOrientation={(orientation) =>
+          dispatchSettings({ type: "setUserOrientation", orientation })
+        }
       />
     </View>
   );
@@ -528,76 +436,64 @@ export const UnsplashUsername = ({
   );
 };
 
-export const UnsplashRandom = ({
-  setSettings,
-}: {
-  setSettings: (value: Settings) => void;
-}) => {
-  const [collections, setCollections] = useState<string | undefined>(undefined);
-  const [topics, setTopics] = useState<string | undefined>(undefined);
-  const [username, setUsername] = useState<string | undefined>(undefined);
-  const [query, setQuery] = useState<string | undefined>("");
-  const [orientation, setOrientation] =
-    useState<UnsplashOrientation>("portrait");
-
-  useEffect(() => {
-    setSettings({
-      type: "random",
-      collections,
-      topics,
-      username,
-      query,
-      orientation,
-    });
-  }, [collections, topics, username, query, orientation]);
+export const UnsplashRandom = () => {
+  const { settings, dispatchSettings } = useUnsplashSettings();
 
   return (
     <View style={{ gap: spacing[2] }}>
       <UnsplashCollections
-        collections={collections}
-        setCollections={setCollections}
+        collections={settings.settings.random.collections}
+        setCollections={(collections) =>
+          dispatchSettings({ type: "setRandomCollections", collections })
+        }
       />
       <UText>Topics:</UText>
       <UTextInput
         placeholder="Topic ID(s), comma-separated"
-        value={topics}
-        onChangeText={(text) => setTopics(text.trim() || undefined)}
+        value={settings.settings.random.topics}
+        onChangeText={(text) =>
+          dispatchSettings({
+            type: "setRandomTopics",
+            topics: text.trim() || undefined,
+          })
+        }
       />
       <UnsplashUsername
-        username={username}
-        setUsername={setUsername}
+        username={settings.settings.random.username}
+        setUsername={(username) =>
+          dispatchSettings({ type: "setRandomUsername", username })
+        }
         optional
       />
-      <UnsplashQuery query={query} setQuery={setQuery} optional />
+      <UnsplashQuery
+        query={settings.settings.random.query}
+        setQuery={(query) =>
+          dispatchSettings({ type: "setRandomQuery", query })
+        }
+        optional
+      />
       <UnsplashOrientation
-        orientation={orientation}
-        setOrientation={setOrientation}
+        orientation={settings.settings.random.orientation}
+        setOrientation={(orientation) =>
+          dispatchSettings({ type: "setRandomOrientation", orientation })
+        }
       />
     </View>
   );
 };
 
-export const UnsplashPhoto = ({
-  setSettings,
-}: {
-  setSettings: (value: Settings) => void;
-}) => {
-  const [photoId, setPhotoId] = useState<string>("");
-
-  useEffect(() => {
-    setSettings({
-      type: "photo",
-      photoId,
-    });
-  }, [photoId]);
+export const UnsplashPhoto = () => {
+  const { settings, dispatchSettings } = useUnsplashSettings();
 
   return (
     <View style={{ gap: spacing[2] }}>
       <UText>Photo ID*</UText>
       <UTextInput
         placeholder="Photo ID"
-        value={photoId}
-        onChangeText={(text) => setPhotoId(text.trim())}
+        value={settings.settings.photo.photoId}
+        onChangeText={(text) =>
+          dispatchSettings({ type: "setPhotoPhotoId", photoId: text.trim() })
+        }
       />
     </View>
   );
