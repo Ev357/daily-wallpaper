@@ -4,6 +4,7 @@ import { UPicker, UPickerItem } from "@/components/ui/picker";
 import { USeparator } from "@/components/ui/separator";
 import { UText } from "@/components/ui/text";
 import { UTextInput } from "@/components/ui/text-input";
+import { UValidatedTextInput } from "@/components/ui/validated-text-input";
 import { SourceContextProvider } from "@/contexts/sourceContext";
 import {
   type UnsplashOrientation as UnsplashOrientationType,
@@ -88,9 +89,13 @@ export const UnsplashTopic = () => {
   return (
     <View style={{ gap: spacing[2] }}>
       <UText>Topic*</UText>
-      <UTextInput
+      <UValidatedTextInput
         placeholder="Id or slug"
         value={settings.settings.topic.topic}
+        isValid={(text) => ({
+          isValid: !!text,
+          errorMessage: "Required",
+        })}
         onChangeText={(text) => {
           dispatchSettings({ type: "setTopicTopic", topic: text.trim() });
         }}
@@ -280,10 +285,14 @@ export const UnsplashQuery = ({
     }) => {
   return (
     <View style={{ gap: spacing[2] }}>
-      <UText>Query{!optional ? "*" : ""}</UText>
-      <UTextInput
+      <UText>Query{!optional && "*"}</UText>
+      <UValidatedTextInput
         placeholder="Query"
         value={query}
+        isValid={(text) => ({
+          isValid: optional || !!text,
+          errorMessage: "Required",
+        })}
         onChangeText={(text) => {
           (
             setQuery as typeof optional extends false
@@ -323,9 +332,13 @@ export const UnsplashCollection = () => {
   return (
     <View style={{ gap: spacing[2] }}>
       <UText>Collection ID*</UText>
-      <UTextInput
+      <UValidatedTextInput
         placeholder="Collection ID"
         value={settings.settings.collections.collectionId}
+        isValid={(text) => ({
+          isValid: !!text,
+          errorMessage: "Required",
+        })}
         onChangeText={(text) => {
           dispatchSettings({
             type: "setCollectionCollectionId",
@@ -406,10 +419,14 @@ export const UnsplashUsername = ({
     }) => {
   return (
     <View style={{ gap: spacing[2] }}>
-      <UText>Username{!optional ? "*" : ""}</UText>
-      <UTextInput
+      <UText>Username{!optional && "*"}</UText>
+      <UValidatedTextInput
         placeholder="Username"
         value={username}
+        isValid={(text) => ({
+          isValid: optional || !!text,
+          errorMessage: "Required",
+        })}
         onChangeText={(text) => {
           (
             setUsername as typeof optional extends false
@@ -474,9 +491,13 @@ export const UnsplashPhoto = () => {
   return (
     <View style={{ gap: spacing[2] }}>
       <UText>Photo ID*</UText>
-      <UTextInput
+      <UValidatedTextInput
         placeholder="Photo ID"
         value={settings.settings.photo.photoId}
+        isValid={(text) => ({
+          isValid: !!text,
+          errorMessage: "Required",
+        })}
         onChangeText={(text) => {
           dispatchSettings({ type: "setPhotoPhotoId", photoId: text.trim() });
         }}

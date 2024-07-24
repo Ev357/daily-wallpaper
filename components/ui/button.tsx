@@ -1,5 +1,4 @@
 import { TouchableOpacity, type TouchableOpacityProps } from "react-native";
-import React from "react";
 import { useColors } from "@/hooks/useColors";
 import { spacing } from "@expo/styleguide-base";
 

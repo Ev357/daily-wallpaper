@@ -2,7 +2,7 @@ import { TextInput, type TextInputProps } from "react-native";
 import { useColors } from "@/hooks/useColors";
 import { spacing } from "@expo/styleguide-base";
 
-const UTextInput = ({
+export const UTextInput = ({
   style,
   placeholderTextColor,
   ...otherProps
@@ -28,5 +28,3 @@ const UTextInput = ({
     />
   );
 };
-
-export { UTextInput };
