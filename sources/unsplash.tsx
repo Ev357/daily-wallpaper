@@ -7,7 +7,7 @@ import { UTextInput } from "@/components/ui/text-input";
 import type { ScreenType } from "@/constants/screenTypes";
 import { Source } from "@/sources/types";
 import { spacing } from "@expo/styleguide-base";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 export const unsplashSource: Source = {
@@ -24,8 +24,14 @@ export const Unsplash = () => {
     "seconds" | "minutes" | "hours" | "days"
   >("minutes");
   const [specificTime, setSpecificTime] = useState(new Date());
-
   const [screenType, setScreenType] = useState<ScreenType>("home");
+
+  const [settings, setSettings] = useState<Settings>({
+    type: "topic",
+    topic: "",
+    orderBy: "popular",
+    orientation: "portrait",
+  });
 
   return (
     <ScrollView>
@@ -43,13 +49,72 @@ export const Unsplash = () => {
         <USeparator />
         <EventScreen screenType={screenType} setScreenType={setScreenType} />
         <USeparator />
-        <UnsplashSettings />
+        <UnsplashSettings setSettings={setSettings} />
       </View>
     </ScrollView>
   );
 };
 
-export const UnsplashSettings = () => {
+export type UnsplashOrientation = "portrait" | "landscape" | "squarish";
+
+export type UnsplashColor =
+  | "all"
+  | "black_and_white"
+  | "black"
+  | "white"
+  | "yellow"
+  | "orange"
+  | "red"
+  | "purple"
+  | "magenta"
+  | "green"
+  | "teal"
+  | "blue";
+
+export type Settings =
+  | {
+      type: "topic";
+      topic: string;
+      orderBy: "popular" | "latest" | "oldest";
+      orientation: UnsplashOrientation;
+    }
+  | {
+      type: "search";
+      query: string;
+      orderBy: "latest" | "relevant";
+      collections: string | undefined;
+      color: UnsplashColor;
+      orientation: "portrait" | "landscape" | "all";
+    }
+  | {
+      type: "collections";
+      collectionId: string;
+      orientation: UnsplashOrientation;
+    }
+  | {
+      type: "user";
+      username: string;
+      orderBy: "popular" | "latest" | "views" | "downloads" | "oldest";
+      orientation: UnsplashOrientation;
+    }
+  | {
+      type: "random";
+      collections: string | undefined;
+      topics: string | undefined;
+      username: string | undefined;
+      query: string | undefined;
+      orientation: UnsplashOrientation;
+    }
+  | {
+      type: "photo";
+      photoId: string;
+    };
+
+export const UnsplashSettings = ({
+  setSettings,
+}: {
+  setSettings: (value: Settings) => void;
+}) => {
   const [sourceType, setSourceType] = useState<
     "topics" | "search" | "collections" | "user" | "random" | "photo"
   >("topics");
@@ -82,26 +147,38 @@ export const UnsplashSettings = () => {
       </View>
       {
         {
-          topics: <UnsplashTopic />,
-          search: <UnsplashSearch />,
-          collections: <UnsplashCollection />,
-          user: <UnsplashUser />,
-          random: <UnsplashRandom />,
-          photo: <UnsplashPhoto />,
+          topics: <UnsplashTopic setSettings={setSettings} />,
+          search: <UnsplashSearch setSettings={setSettings} />,
+          collections: <UnsplashCollection setSettings={setSettings} />,
+          user: <UnsplashUser setSettings={setSettings} />,
+          random: <UnsplashRandom setSettings={setSettings} />,
+          photo: <UnsplashPhoto setSettings={setSettings} />,
         }[sourceType]
       }
     </View>
   );
 };
 
-export const UnsplashTopic = () => {
+export const UnsplashTopic = ({
+  setSettings,
+}: {
+  setSettings: (value: Settings) => void;
+}) => {
+  const [topic, setTopic] = useState("");
   const [orderBy, setOrderBy] = useState<"popular" | "latest" | "oldest">(
     "popular"
   );
-  const [topic, setTopic] = useState("");
-  const [orientation, setOrientation] = useState<
-    "portrait" | "landscape" | "squarish"
-  >("portrait");
+  const [orientation, setOrientation] =
+    useState<UnsplashOrientation>("portrait");
+
+  useEffect(() => {
+    setSettings({
+      type: "topic",
+      topic,
+      orderBy,
+      orientation,
+    });
+  }, [topic, orderBy, orientation]);
 
   return (
     <View style={{ gap: spacing[2] }}>
@@ -140,27 +217,29 @@ export const UnsplashTopic = () => {
   );
 };
 
-export const UnsplashSearch = () => {
+export const UnsplashSearch = ({
+  setSettings,
+}: {
+  setSettings: (value: Settings) => void;
+}) => {
   const [query, setQuery] = useState("");
   const [orderBy, setOrderBy] = useState<"latest" | "relevant">("latest");
   const [collections, setCollections] = useState<string | undefined>(undefined);
-  const [color, setColor] = useState<
-    | "all"
-    | "black_and_white"
-    | "black"
-    | "white"
-    | "yellow"
-    | "orange"
-    | "red"
-    | "purple"
-    | "magenta"
-    | "green"
-    | "teal"
-    | "blue"
-  >("all");
+  const [color, setColor] = useState<UnsplashColor>("all");
   const [orientation, setOrientation] = useState<
     "portrait" | "landscape" | "all"
   >("portrait");
+
+  useEffect(() => {
+    setSettings({
+      type: "search",
+      query,
+      orderBy,
+      collections,
+      color,
+      orientation,
+    });
+  }, [query, orderBy, collections, color, orientation]);
 
   return (
     <View style={{ gap: spacing[2] }}>
@@ -248,8 +327,8 @@ export const UnsplashOrientation = ({
   orientation,
   setOrientation,
 }: {
-  orientation: "portrait" | "landscape" | "squarish";
-  setOrientation: (value: "portrait" | "landscape" | "squarish") => void;
+  orientation: UnsplashOrientation;
+  setOrientation: (value: UnsplashOrientation) => void;
 }) => {
   return (
     <View
@@ -328,11 +407,22 @@ export const UnsplashCollections = ({
   );
 };
 
-export const UnsplashCollection = () => {
+export const UnsplashCollection = ({
+  setSettings,
+}: {
+  setSettings: (value: Settings) => void;
+}) => {
   const [collectionId, setCollectionId] = useState<string>("");
-  const [orientation, setOrientation] = useState<
-    "portrait" | "landscape" | "squarish"
-  >("portrait");
+  const [orientation, setOrientation] =
+    useState<UnsplashOrientation>("portrait");
+
+  useEffect(() => {
+    setSettings({
+      type: "collections",
+      collectionId,
+      orientation,
+    });
+  }, [collectionId, orientation]);
 
   return (
     <View style={{ gap: spacing[2] }}>
@@ -350,14 +440,26 @@ export const UnsplashCollection = () => {
   );
 };
 
-export const UnsplashUser = () => {
+export const UnsplashUser = ({
+  setSettings,
+}: {
+  setSettings: (value: Settings) => void;
+}) => {
   const [username, setUsername] = useState<string>("");
   const [orderBy, setOrderBy] = useState<
     "popular" | "latest" | "views" | "downloads" | "oldest"
   >("popular");
-  const [orientation, setOrientation] = useState<
-    "portrait" | "landscape" | "squarish"
-  >("portrait");
+  const [orientation, setOrientation] =
+    useState<UnsplashOrientation>("portrait");
+
+  useEffect(() => {
+    setSettings({
+      type: "user",
+      username,
+      orderBy,
+      orientation,
+    });
+  }, [username, orderBy, orientation]);
 
   return (
     <View style={{ gap: spacing[2] }}>
@@ -426,14 +528,28 @@ export const UnsplashUsername = ({
   );
 };
 
-export const UnsplashRandom = () => {
+export const UnsplashRandom = ({
+  setSettings,
+}: {
+  setSettings: (value: Settings) => void;
+}) => {
   const [collections, setCollections] = useState<string | undefined>(undefined);
   const [topics, setTopics] = useState<string | undefined>(undefined);
   const [username, setUsername] = useState<string | undefined>(undefined);
   const [query, setQuery] = useState<string | undefined>("");
-  const [orientation, setOrientation] = useState<
-    "portrait" | "landscape" | "squarish"
-  >("portrait");
+  const [orientation, setOrientation] =
+    useState<UnsplashOrientation>("portrait");
+
+  useEffect(() => {
+    setSettings({
+      type: "random",
+      collections,
+      topics,
+      username,
+      query,
+      orientation,
+    });
+  }, [collections, topics, username, query, orientation]);
 
   return (
     <View style={{ gap: spacing[2] }}>
@@ -461,8 +577,19 @@ export const UnsplashRandom = () => {
   );
 };
 
-export const UnsplashPhoto = () => {
+export const UnsplashPhoto = ({
+  setSettings,
+}: {
+  setSettings: (value: Settings) => void;
+}) => {
   const [photoId, setPhotoId] = useState<string>("");
+
+  useEffect(() => {
+    setSettings({
+      type: "photo",
+      photoId,
+    });
+  }, [photoId]);
 
   return (
     <View style={{ gap: spacing[2] }}>
