@@ -23,20 +23,26 @@ export const unsplashSource: Source = {
 };
 
 export const Unsplash = () => {
+  return (
+    <SourceContextProvider>
+      <UnsplashSettingsContextProvider>
+        <UnsplashScreen />
+      </UnsplashSettingsContextProvider>
+    </SourceContextProvider>
+  );
+};
+
+export const UnsplashScreen = () => {
   const colors = useColors();
 
   return (
     <ScrollView>
       <View style={{ gap: spacing[2], paddingBottom: spacing[4] }}>
-        <SourceContextProvider>
-          <SourceTiming />
-          <USeparator />
-          <SourceScreen />
-        </SourceContextProvider>
+        <SourceTiming />
         <USeparator />
-        <UnsplashSettingsContextProvider>
-          <UnsplashSettings />
-        </UnsplashSettingsContextProvider>
+        <SourceScreen />
+        <USeparator />
+        <UnsplashSettings />
         <UButton>
           <UText
             style={{ color: colors.primaryForeground, textAlign: "center" }}
