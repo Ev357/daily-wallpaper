@@ -1,6 +1,10 @@
+import EventScreen from "@/components/EventScreen";
 import EventTiming from "@/components/EventTiming";
+import { USeparator } from "@/components/ui/separator";
 import { Source } from "@/sources/types";
+import { spacing } from "@expo/styleguide-base";
 import { useState } from "react";
+import { View } from "react-native";
 
 export const unsplashSource: Source = {
   name: "unsplash",
@@ -18,15 +22,19 @@ export const Unsplash = () => {
   const [specificTime, setSpecificTime] = useState(new Date());
 
   return (
-    <EventTiming
-      triggerType={triggerType}
-      setTriggerType={setTriggerType}
-      interval={interval}
-      setInterval={setInterval}
-      intervalUnit={intervalUnit}
-      setIntervalUnit={setIntervalUnit}
-      specificTime={specificTime}
-      setSpecificTime={setSpecificTime}
-    />
+    <View style={{ gap: spacing[2] }}>
+      <EventTiming
+        triggerType={triggerType}
+        setTriggerType={setTriggerType}
+        interval={interval}
+        setInterval={setInterval}
+        intervalUnit={intervalUnit}
+        setIntervalUnit={setIntervalUnit}
+        specificTime={specificTime}
+        setSpecificTime={setSpecificTime}
+      />
+      <USeparator />
+      <EventScreen />
+    </View>
   );
 };

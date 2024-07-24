@@ -1,25 +1,21 @@
 import { Text, type TextProps, StyleSheet } from "react-native";
-import { useThemeColor } from "@/hooks/useThemeColor";
-
-export type ThemedTextProps = TextProps & {
-  lightColor?: string;
-  darkColor?: string;
-  size?: "sm" | "base" | "lg" | "xl";
-};
+import { useColors } from "@/hooks/useColors";
 
 export const UText = ({
   style,
-  lightColor,
-  darkColor,
   size = "base",
-  ...rest
-}: ThemedTextProps) => {
-  const color = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    "foreground"
-  );
+  ...otherProps
+}: TextProps & {
+  size?: "sm" | "base" | "lg" | "xl";
+}) => {
+  const colors = useColors();
 
-  return <Text style={[{ color }, styles[size], style]} {...rest} />;
+  return (
+    <Text
+      style={[{ color: colors.foreground }, styles[size], style]}
+      {...otherProps}
+    />
+  );
 };
 
 const styles = StyleSheet.create({
