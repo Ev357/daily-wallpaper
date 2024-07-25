@@ -14,7 +14,7 @@ import { useLayoutEffect } from "react";
 const SourceSettings = () => {
   const { name } = useLocalSearchParams<{ name: "unsplash" | "facebook" }>();
 
-  const Fallback = <Redirect href="/sources" />;
+  const Fallback = <Redirect href="/settings/sources" />;
 
   const navigation = useNavigation();
 

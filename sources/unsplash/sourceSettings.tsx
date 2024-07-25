@@ -4,23 +4,18 @@ import { UTextInput } from "@/components/ui/text-input";
 import { useColors } from "@/hooks/useColors";
 import { spacing } from "@expo/styleguide-base";
 import { useState } from "react";
-import { Keyboard, ScrollView, View } from "react-native";
+import { Keyboard, ScrollView, TouchableOpacity, View } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { UIcon } from "@/components/ui/icon";
+import { useIsKeyConfigured } from "@/hooks/useIsKeyConfigured";
+import * as Linking from "expo-linking";
 
 export const UnsplashSourceSettings = () => {
   const colors = useColors();
 
   const [accessKey, setAccessKey] = useState("");
-  const [isAccessKeyConfigured, setIsAccessKeyConfigured] = useState(false);
-
-  const checkISAccessKeyConfigured = async () => {
-    const accessKey = await SecureStore.getItemAsync("unsplashAccessKey");
-
-    setIsAccessKeyConfigured(!!accessKey);
-  };
-
-  checkISAccessKeyConfigured();
+  const [isAccessKeyConfigured, checkIsAccessKeyConfigured] =
+    useIsKeyConfigured("unsplashAccessKey");
 
   return (
     <ScrollView keyboardShouldPersistTaps="handled">
@@ -32,7 +27,24 @@ export const UnsplashSourceSettings = () => {
             alignItems: "center",
           }}
         >
-          <UText>Access Key</UText>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL(
+                "https://unsplash.com/documentation#getting-started"
+              );
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: spacing["0.5"],
+              }}
+            >
+              <UText>Access Key</UText>
+              <UIcon name="information-circle-outline" size={spacing[5]} />
+            </View>
+          </TouchableOpacity>
           {isAccessKeyConfigured && (
             <View
               style={{
@@ -60,7 +72,7 @@ export const UnsplashSourceSettings = () => {
 
             setAccessKey("");
 
-            checkISAccessKeyConfigured();
+            checkIsAccessKeyConfigured();
 
             Keyboard.dismiss();
           }}

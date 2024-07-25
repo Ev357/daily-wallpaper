@@ -1,5 +1,6 @@
 import SourceScreen from "@/components/SourceScreen";
 import SourceTiming from "@/components/SourceTiming";
+import { UAlert, UAlertDescription, UAlertTitle } from "@/components/ui/alert";
 import { UButton } from "@/components/ui/button";
 import { UPicker, UPickerItem } from "@/components/ui/picker";
 import { USeparator } from "@/components/ui/separator";
@@ -16,9 +17,11 @@ import {
   useUnsplashSettings,
 } from "@/contexts/unsplashSettingsContext";
 import { useColors } from "@/hooks/useColors";
+import { useIsKeyConfigured } from "@/hooks/useIsKeyConfigured";
 import { Source } from "@/sources/types";
 import { spacing } from "@expo/styleguide-base";
-import { ScrollView, View } from "react-native";
+import { useRouter } from "expo-router";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 
 export const unsplashSource: Source = {
   name: "unsplash",
@@ -46,9 +49,43 @@ export const UnsplashScreen = () => {
     dispatchSource({ type: "setTouchAll", touchAll: true });
   };
 
+  const [isAccessKeyConfigured] = useIsKeyConfigured("unsplashAccessKey");
+
+  const router = useRouter();
+
   return (
     <ScrollView>
       <View style={{ gap: spacing[2], paddingBottom: spacing[4] }}>
+        {!isAccessKeyConfigured && (
+          <>
+            <TouchableOpacity
+              onPress={() => {
+                // https://github.com/expo/expo/issues/26211
+                router.push("/settings");
+                setTimeout(() => {
+                  router.push({
+                    pathname: "/settings/sources/",
+                  });
+                  setTimeout(() => {
+                    router.push({
+                      pathname: "/settings/sources/[name]",
+                      params: { name: "unsplash" },
+                    });
+                  });
+                });
+              }}
+            >
+              <UAlert icon="warning-outline" variant="destructive">
+                <UAlertTitle>Warning</UAlertTitle>
+                <UAlertDescription>
+                  The Unsplash Access Key needs to be configured. Click here to
+                  set it up.
+                </UAlertDescription>
+              </UAlert>
+            </TouchableOpacity>
+            <USeparator />
+          </>
+        )}
         <SourceTiming />
         <USeparator />
         <SourceScreen />

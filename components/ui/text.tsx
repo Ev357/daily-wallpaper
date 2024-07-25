@@ -1,13 +1,11 @@
 import { Text, type TextProps, StyleSheet } from "react-native";
 import { useColors } from "@/hooks/useColors";
 
-export const UText = ({
-  style,
-  size = "base",
-  ...otherProps
-}: TextProps & {
+export type UTextProps = TextProps & {
   size?: "sm" | "base" | "lg" | "xl";
-}) => {
+};
+
+export const UText = ({ style, size = "base", ...otherProps }: UTextProps) => {
   const colors = useColors();
 
   return (
