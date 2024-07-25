@@ -15,6 +15,8 @@ export type SourceSettings = {
   };
   specificTime: Date;
   screenType: ScreenType;
+  isValid: boolean;
+  touchAll: boolean;
 };
 
 export type SourceSettingsActions =
@@ -37,6 +39,14 @@ export type SourceSettingsActions =
   | {
       type: "setScreenType";
       screenType: ScreenType;
+    }
+  | {
+      type: "setIsValid";
+      isValid: boolean;
+    }
+  | {
+      type: "setTouchAll";
+      touchAll: boolean;
     };
 
 const sourceReducer = (
@@ -75,6 +85,16 @@ const sourceReducer = (
         ...state,
         screenType: action.screenType,
       } satisfies SourceSettings;
+    case "setIsValid":
+      return {
+        ...state,
+        isValid: action.isValid,
+      };
+    case "setTouchAll":
+      return {
+        ...state,
+        touchAll: action.touchAll,
+      };
   }
 };
 
@@ -99,6 +119,8 @@ export const SourceContextProvider = ({
     },
     specificTime: new Date(),
     screenType: "home",
+    isValid: true,
+    touchAll: false,
   } satisfies SourceSettings);
 
   return (

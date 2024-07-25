@@ -23,7 +23,7 @@ export type UnsplashColor =
   | "blue";
 
 export type SourceType =
-  | "topics"
+  | "topic"
   | "search"
   | "collections"
   | "user"
@@ -37,6 +37,7 @@ export type Settings = {
       topic: string;
       orderBy: "popular" | "latest" | "oldest";
       orientation: UnsplashOrientation;
+      isValid: boolean;
     };
     search: {
       query: string;
@@ -44,15 +45,18 @@ export type Settings = {
       collections: string | undefined;
       color: UnsplashColor;
       orientation: "portrait" | "landscape" | "all";
+      isValid: boolean;
     };
     collections: {
       collectionId: string;
       orientation: UnsplashOrientation;
+      isValid: boolean;
     };
     user: {
       username: string;
       orderBy: "popular" | "latest" | "views" | "downloads" | "oldest";
       orientation: UnsplashOrientation;
+      isValid: boolean;
     };
     random: {
       collections: string | undefined;
@@ -63,8 +67,11 @@ export type Settings = {
     };
     photo: {
       photoId: string;
+      isValid: boolean;
     };
   };
+  isValid: boolean;
+  touchAll: boolean;
 };
 
 export type UnsplashSettingsActions =
@@ -83,6 +90,10 @@ export type UnsplashSettingsActions =
   | {
       type: "setTopicOrientation";
       orientation: UnsplashOrientation;
+    }
+  | {
+      type: "setTopicIsValid";
+      isValid: boolean;
     }
   | {
       type: "setSearchQuery";
@@ -105,12 +116,20 @@ export type UnsplashSettingsActions =
       orientation: "portrait" | "landscape" | "all";
     }
   | {
+      type: "setSearchIsValid";
+      isValid: boolean;
+    }
+  | {
       type: "setCollectionCollectionId";
       collectionId: string;
     }
   | {
       type: "setCollectionOrientation";
       orientation: UnsplashOrientation;
+    }
+  | {
+      type: "setCollectionIsValid";
+      isValid: boolean;
     }
   | {
       type: "setUserUsername";
@@ -123,6 +142,10 @@ export type UnsplashSettingsActions =
   | {
       type: "setUserOrientation";
       orientation: UnsplashOrientation;
+    }
+  | {
+      type: "setUserIsValid";
+      isValid: boolean;
     }
   | {
       type: "setRandomCollections";
@@ -147,18 +170,41 @@ export type UnsplashSettingsActions =
   | {
       type: "setPhotoPhotoId";
       photoId: string;
+    }
+  | {
+      type: "setPhotoIsValid";
+      isValid: boolean;
+    }
+  | {
+      type: "setTouchAll";
+      touchAll: boolean;
     };
 
 const unsplashSettingsReducer = (
   state: Settings,
   action: UnsplashSettingsActions
 ) => {
+  const checkIsSourceValid = () => {
+    const source = state.settings[state.sourceType];
+
+    if ("isValid" in source) {
+      state.isValid = source.isValid;
+      return;
+    }
+
+    state.isValid = true;
+  };
+
   switch (action.type) {
     case "setSourceType":
-      return {
+      state = {
         ...state,
         sourceType: action.sourceType,
-      } satisfies Settings;
+      };
+
+      checkIsSourceValid();
+
+      return state;
     case "setTopicTopic":
       return {
         ...state,
@@ -170,6 +216,21 @@ const unsplashSettingsReducer = (
           },
         },
       } satisfies Settings;
+    case "setTopicIsValid":
+      state = {
+        ...state,
+        settings: {
+          ...state.settings,
+          topic: {
+            ...state.settings.topic,
+            isValid: action.isValid,
+          },
+        },
+      };
+
+      checkIsSourceValid();
+
+      return state;
     case "setTopicOrderBy":
       return {
         ...state,
@@ -247,6 +308,21 @@ const unsplashSettingsReducer = (
           },
         },
       } satisfies Settings;
+    case "setSearchIsValid":
+      state = {
+        ...state,
+        settings: {
+          ...state.settings,
+          search: {
+            ...state.settings.search,
+            isValid: action.isValid,
+          },
+        },
+      };
+
+      checkIsSourceValid();
+
+      return state;
     case "setCollectionCollectionId":
       return {
         ...state,
@@ -269,6 +345,21 @@ const unsplashSettingsReducer = (
           },
         },
       } satisfies Settings;
+    case "setCollectionIsValid":
+      state = {
+        ...state,
+        settings: {
+          ...state.settings,
+          collections: {
+            ...state.settings.collections,
+            isValid: action.isValid,
+          },
+        },
+      };
+
+      checkIsSourceValid();
+
+      return state;
     case "setUserUsername":
       return {
         ...state,
@@ -302,6 +393,21 @@ const unsplashSettingsReducer = (
           },
         },
       } satisfies Settings;
+    case "setUserIsValid":
+      state = {
+        ...state,
+        settings: {
+          ...state.settings,
+          user: {
+            ...state.settings.user,
+            isValid: action.isValid,
+          },
+        },
+      };
+
+      checkIsSourceValid();
+
+      return state;
     case "setRandomCollections":
       return {
         ...state,
@@ -368,6 +474,26 @@ const unsplashSettingsReducer = (
           },
         },
       } satisfies Settings;
+    case "setPhotoIsValid":
+      state = {
+        ...state,
+        settings: {
+          ...state.settings,
+          photo: {
+            ...state.settings.photo,
+            isValid: action.isValid,
+          },
+        },
+      };
+
+      checkIsSourceValid();
+
+      return state;
+    case "setTouchAll":
+      return {
+        ...state,
+        touchAll: action.touchAll,
+      };
   }
 };
 
@@ -385,12 +511,13 @@ export const UnsplashSettingsContextProvider = ({
   children: ReactNode;
 }) => {
   const [settings, dispatchSettings] = useReducer(unsplashSettingsReducer, {
-    sourceType: "topics",
+    sourceType: "topic",
     settings: {
       topic: {
         topic: "wallpapers",
         orderBy: "popular",
         orientation: "portrait",
+        isValid: true,
       },
       search: {
         query: "",
@@ -398,15 +525,18 @@ export const UnsplashSettingsContextProvider = ({
         collections: undefined,
         color: "all",
         orientation: "portrait",
+        isValid: false,
       },
       collections: {
         collectionId: "",
         orientation: "portrait",
+        isValid: false,
       },
       user: {
         username: "",
         orderBy: "popular",
         orientation: "portrait",
+        isValid: false,
       },
       random: {
         collections: undefined,
@@ -417,8 +547,11 @@ export const UnsplashSettingsContextProvider = ({
       },
       photo: {
         photoId: "",
+        isValid: false,
       },
     },
+    isValid: true,
+    touchAll: false,
   } satisfies Settings);
 
   return (

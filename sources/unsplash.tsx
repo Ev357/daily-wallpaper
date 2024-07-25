@@ -6,7 +6,10 @@ import { USeparator } from "@/components/ui/separator";
 import { UText } from "@/components/ui/text";
 import { UTextInput } from "@/components/ui/text-input";
 import { UValidatedTextInput } from "@/components/ui/validated-text-input";
-import { SourceContextProvider } from "@/contexts/sourceContext";
+import {
+  SourceContextProvider,
+  useSourceContext,
+} from "@/contexts/sourceContext";
 import {
   type UnsplashOrientation as UnsplashOrientationType,
   UnsplashSettingsContextProvider,
@@ -35,6 +38,14 @@ export const Unsplash = () => {
 export const UnsplashScreen = () => {
   const colors = useColors();
 
+  const { settings, dispatchSettings } = useUnsplashSettings();
+  const { source, dispatchSource } = useSourceContext();
+
+  const touchAll = () => {
+    dispatchSettings({ type: "setTouchAll", touchAll: true });
+    dispatchSource({ type: "setTouchAll", touchAll: true });
+  };
+
   return (
     <ScrollView>
       <View style={{ gap: spacing[2], paddingBottom: spacing[4] }}>
@@ -43,7 +54,16 @@ export const UnsplashScreen = () => {
         <SourceScreen />
         <USeparator />
         <UnsplashSettings />
-        <UButton>
+        <UButton
+          onPress={() => {
+            if (!settings.isValid || !source.isValid) {
+              touchAll();
+              return;
+            }
+
+            // TODO: Save
+          }}
+        >
           <UText
             style={{ color: colors.primaryForeground, textAlign: "center" }}
           >
@@ -78,7 +98,7 @@ export const UnsplashSettings = () => {
             flexGrow: 1,
           }}
         >
-          <UPickerItem label="Topics" value="topics" />
+          <UPickerItem label="Topics" value="topic" />
           <UPickerItem label="Search" value="search" />
           <UPickerItem label="Collections" value="collections" />
           <UPickerItem label="User Photos" value="user" />
@@ -88,7 +108,7 @@ export const UnsplashSettings = () => {
       </View>
       {
         {
-          topics: <UnsplashTopic />,
+          topic: <UnsplashTopic />,
           search: <UnsplashSearch />,
           collections: <UnsplashCollection />,
           user: <UnsplashUser />,
@@ -113,9 +133,13 @@ export const UnsplashTopic = () => {
           isValid: !!text,
           errorMessage: "Required",
         })}
+        setIsValid={(isValid) => {
+          dispatchSettings({ type: "setTopicIsValid", isValid });
+        }}
         onChangeText={(text) => {
           dispatchSettings({ type: "setTopicTopic", topic: text.trim() });
         }}
+        touched={settings.touchAll}
       />
       <View
         style={{
@@ -160,6 +184,10 @@ export const UnsplashSearch = () => {
         setQuery={(query) => {
           dispatchSettings({ type: "setSearchQuery", query });
         }}
+        setIsValid={(isValid) => {
+          dispatchSettings({ type: "setSearchIsValid", isValid });
+        }}
+        touched={settings.touchAll}
       />
       <View
         style={{
@@ -289,16 +317,22 @@ export const UnsplashQuery = ({
   query,
   setQuery,
   optional = false,
+  setIsValid,
+  touched,
 }:
   | {
       query: string;
       setQuery: (value: string) => void;
       optional?: false;
+      setIsValid?: (value: boolean) => void;
+      touched?: boolean;
     }
   | {
       query: string | undefined;
       setQuery: (value: string | undefined) => void;
       optional: true;
+      setIsValid?: (value: boolean) => void;
+      touched?: boolean;
     }) => {
   return (
     <View style={{ gap: spacing[2] }}>
@@ -310,6 +344,7 @@ export const UnsplashQuery = ({
           isValid: optional || !!text,
           errorMessage: "Required",
         })}
+        setIsValid={setIsValid}
         onChangeText={(text) => {
           (
             setQuery as typeof optional extends false
@@ -317,6 +352,7 @@ export const UnsplashQuery = ({
               : (value: string | undefined) => void
           )(!optional ? text.trim() : text.trim() || undefined);
         }}
+        touched={touched}
       />
     </View>
   );
@@ -356,12 +392,16 @@ export const UnsplashCollection = () => {
           isValid: !!text,
           errorMessage: "Required",
         })}
+        setIsValid={(isValid) => {
+          dispatchSettings({ type: "setCollectionIsValid", isValid });
+        }}
         onChangeText={(text) => {
           dispatchSettings({
             type: "setCollectionCollectionId",
             collectionId: text.trim(),
           });
         }}
+        touched={settings.touchAll}
       />
       <UnsplashOrientation
         orientation={settings.settings.collections.orientation}
@@ -383,6 +423,10 @@ export const UnsplashUser = () => {
         setUsername={(username) => {
           dispatchSettings({ type: "setUserUsername", username });
         }}
+        setIsValid={(isValid) => {
+          dispatchSettings({ type: "setUserIsValid", isValid });
+        }}
+        touched={settings.touchAll}
       />
       <View
         style={{
@@ -423,16 +467,22 @@ export const UnsplashUsername = ({
   username,
   setUsername,
   optional = false,
+  setIsValid,
+  touched,
 }:
   | {
       username: string;
       setUsername: (value: string) => void;
       optional?: false;
+      setIsValid?: (value: boolean) => void;
+      touched?: boolean;
     }
   | {
       username: string | undefined;
       setUsername: (value: string | undefined) => void;
       optional: true;
+      setIsValid?: (value: boolean) => void;
+      touched?: boolean;
     }) => {
   return (
     <View style={{ gap: spacing[2] }}>
@@ -444,6 +494,7 @@ export const UnsplashUsername = ({
           isValid: optional || !!text,
           errorMessage: "Required",
         })}
+        setIsValid={setIsValid}
         onChangeText={(text) => {
           (
             setUsername as typeof optional extends false
@@ -451,6 +502,7 @@ export const UnsplashUsername = ({
               : (value: string | undefined) => void
           )(!optional ? text.trim() : text.trim() || undefined);
         }}
+        touched={touched}
       />
     </View>
   );
@@ -515,9 +567,13 @@ export const UnsplashPhoto = () => {
           isValid: !!text,
           errorMessage: "Required",
         })}
+        setIsValid={(isValid) => {
+          dispatchSettings({ type: "setPhotoIsValid", isValid });
+        }}
         onChangeText={(text) => {
           dispatchSettings({ type: "setPhotoPhotoId", photoId: text.trim() });
         }}
+        touched={settings.touchAll}
       />
     </View>
   );

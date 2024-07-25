@@ -1,12 +1,12 @@
 import { UButton } from "@/components/ui/button";
 import { UPicker, UPickerItem } from "@/components/ui/picker";
-import { UTextInput } from "@/components/ui/text-input";
 import { UText } from "@/components/ui/text";
 import { getFormattedTime } from "@/utils/getFormattedTime";
 import { spacing } from "@expo/styleguide-base";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { View } from "react-native";
 import { useSourceContext } from "@/contexts/sourceContext";
+import { UValidatedTextInput } from "@/components/ui/validated-text-input";
 
 const SourceTiming = () => {
   const { source, dispatchSource } = useSourceContext();
@@ -54,17 +54,50 @@ const SourceTiming = () => {
 
       {source.triggerType === "periodic" ? (
         <View style={{ flexDirection: "row", gap: spacing[2] }}>
-          <UTextInput
+          <UValidatedTextInput
             keyboardType="numeric"
-            value={String(source.periodic.interval)}
+            value={
+              source.periodic.interval !== 0
+                ? String(source.periodic.interval)
+                : ""
+            }
             onChangeText={(text) => {
+              const interval = Number(text);
+
+              if (isNaN(interval)) return;
+
               dispatchSource({
                 type: "setInterval",
-                interval: Number(text),
+                interval,
               });
             }}
+            isValid={(text) => {
+              const interval = Number(text);
+
+              if (isNaN(interval)) {
+                return {
+                  isValid: false,
+                  errorMessage: "Invalid interval",
+                };
+              }
+
+              if (interval < 1) {
+                return {
+                  isValid: false,
+                  errorMessage: "Interval must be greater than 0",
+                };
+              }
+
+              return {
+                isValid: true,
+              };
+            }}
+            setIsValid={(isValid) => {
+              dispatchSource({ type: "setIsValid", isValid });
+            }}
             maxLength={10}
-            style={{ flexGrow: 1 }}
+            containerStyle={{ flexGrow: 1 }}
+            touched={source.touchAll}
           />
 
           <UPicker
