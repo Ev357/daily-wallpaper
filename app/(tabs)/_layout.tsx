@@ -31,7 +31,7 @@ const TabLayout = () => {
         <Tabs.Screen
           name="events"
           options={{
-            title: "Events",
+            headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 name={focused ? "time" : "time-outline"}

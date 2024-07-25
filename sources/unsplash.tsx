@@ -21,7 +21,9 @@ import { useIsKeyConfigured } from "@/hooks/useIsKeyConfigured";
 import { Source } from "@/sources/types";
 import { spacing } from "@expo/styleguide-base";
 import { useRouter } from "expo-router";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import { ScrollView, ToastAndroid, TouchableOpacity, View } from "react-native";
+import { db } from "@/db";
+import { events } from "@/db/schema";
 
 export const unsplashSource: Source = {
   name: "unsplash",
@@ -52,6 +54,27 @@ export const UnsplashScreen = () => {
   const [isAccessKeyConfigured] = useIsKeyConfigured("unsplashAccessKey");
 
   const router = useRouter();
+
+  const addEvent = async () => {
+    if (!settings.isValid || !source.isValid) {
+      touchAll();
+      return;
+    }
+
+    try {
+      await db.insert(events).values({
+        settings: source,
+        source: "unsplash",
+        sourceSettings: settings,
+      });
+
+      ToastAndroid.show("Saved", ToastAndroid.SHORT);
+
+      router.back();
+    } catch (_) {
+      ToastAndroid.show("Failed to save", ToastAndroid.SHORT);
+    }
+  };
 
   return (
     <ScrollView>
@@ -91,16 +114,7 @@ export const UnsplashScreen = () => {
         <SourceScreen />
         <USeparator />
         <UnsplashSettings />
-        <UButton
-          onPress={() => {
-            if (!settings.isValid || !source.isValid) {
-              touchAll();
-              return;
-            }
-
-            // TODO: Save
-          }}
-        >
+        <UButton onPress={addEvent}>
           <UText
             style={{ color: colors.primaryForeground, textAlign: "center" }}
           >

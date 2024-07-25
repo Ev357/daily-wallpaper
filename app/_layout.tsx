@@ -7,6 +7,9 @@ import "react-native-reanimated";
 import { ActivityIndicator, useColorScheme, View } from "react-native";
 import { darkTheme, lightTheme } from "@/constants/themes";
 import { useColors } from "@/hooks/useColors";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import migrations from "@/drizzle/migrations";
+import { db } from "@/db";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -17,14 +20,15 @@ const RootLayout = () => {
   const [loaded] = useFonts({
     Geist: require("../assets/fonts/Geist-Regular.ttf"),
   });
+  const { success } = useMigrations(db, migrations);
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    if (!loaded || !success) return;
 
-  if (!loaded) {
+    SplashScreen.hideAsync();
+  }, [loaded, success]);
+
+  if (!loaded || !success) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color={colors.foreground} />
