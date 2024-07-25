@@ -7,16 +7,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const NewEvent = () => {
   const { name } = useLocalSearchParams<{ name: "unsplash" | "facebook" }>();
 
-  const events = {
-    unsplash: <Unsplash />,
-    facebook: <Facebook />,
-  };
-
   const Fallback = <Redirect href="/sources" />;
 
   return (
     <SafeAreaView style={{ flex: 1, paddingHorizontal: spacing[4] }}>
-      {name ? events[name] ?? Fallback : Fallback}
+      {name
+        ? {
+            unsplash: <Unsplash />,
+            facebook: <Facebook />,
+          }[name] ?? Fallback
+        : Fallback}
     </SafeAreaView>
   );
 };

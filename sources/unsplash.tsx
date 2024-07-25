@@ -519,7 +519,7 @@ export const UnsplashRandom = () => {
           dispatchSettings({ type: "setRandomCollections", collections });
         }}
       />
-      <UText>Topics:</UText>
+      <UText>Topics</UText>
       <UTextInput
         placeholder="Topic ID(s), comma-separated"
         value={settings.settings.random.topics}
