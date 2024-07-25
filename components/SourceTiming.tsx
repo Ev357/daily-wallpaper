@@ -53,7 +53,13 @@ const SourceTiming = () => {
       </View>
 
       {source.triggerType === "periodic" ? (
-        <View style={{ flexDirection: "row", gap: spacing[2] }}>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: spacing[2],
+            alignItems: "flex-start",
+          }}
+        >
           <UValidatedTextInput
             keyboardType="numeric"
             value={
