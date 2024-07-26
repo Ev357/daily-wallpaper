@@ -10,6 +10,7 @@ import { useColors } from "@/hooks/useColors";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "@/drizzle/migrations";
 import { db } from "@/db";
+import { initBackgroundFetch } from "@/utils/initBackgroundFetch";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -27,6 +28,10 @@ const RootLayout = () => {
 
     SplashScreen.hideAsync();
   }, [loaded, success]);
+
+  useEffect(() => {
+    initBackgroundFetch();
+  }, []);
 
   if (!loaded || !success) {
     return (
