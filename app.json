@@ -13,14 +13,17 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ev357.dailywallpaper"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["android.permission.SET_WALLPAPER"],
+      "permissions": [
+        "android.permission.SET_WALLPAPER"
+      ],
       "package": "com.ev357.dailywallpaper"
     },
     "web": {
