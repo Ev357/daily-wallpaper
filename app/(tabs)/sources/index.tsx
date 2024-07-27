@@ -1,5 +1,4 @@
 import { FlatList, TouchableOpacity, View } from "react-native";
-import { setWallpaper, TYPE_SCREEN } from "rn-wallpapers";
 import { unsplashSource } from "@/sources/unsplash";
 import { facebookSource } from "@/sources/facebook";
 import type { Source } from "@/sources/types";
@@ -7,12 +6,22 @@ import { UCard, UCardHeader, UCardTitle } from "@/components/ui/card";
 import { spacing } from "@expo/styleguide-base";
 import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { UButton } from "@/components/ui/button";
+import { UText } from "@/components/ui/text";
+import { onEvent } from "@/utils/initBackgroundFetch";
 
 const sources: Source[] = [unsplashSource, facebookSource];
 
 const Sources = () => {
   return (
     <SafeAreaView style={{ flex: 1, paddingHorizontal: spacing[4] }}>
+      <UButton
+        onPress={() => {
+          onEvent("com.ev357.dailywallpaper.update");
+        }}
+      >
+        <UText style={{ color: "black" }}>Fetch</UText>
+      </UButton>
       <FlatList
         data={sources}
         renderItem={({ item }) => (
@@ -34,12 +43,3 @@ const Sources = () => {
 };
 
 export default Sources;
-
-const setWallpaperOnPress = async () => {
-  await setWallpaper(
-    {
-      uri: "https://i0.wp.com/techwek.com/wp-content/uploads/2021/01/wallpaper-gotas-de-chuva.jpg",
-    },
-    TYPE_SCREEN.HOME
-  );
-};

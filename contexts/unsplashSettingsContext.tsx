@@ -74,6 +74,43 @@ export type Settings = {
   touchAll: boolean;
 };
 
+export type RawUnsplashSettings = {
+  sourceType: SourceType;
+  settings: {
+    topic: {
+      topic: string;
+      orderBy: "popular" | "latest" | "oldest";
+      orientation: UnsplashOrientation;
+    };
+    search: {
+      query: string;
+      orderBy: "latest" | "relevant";
+      collections: string | undefined;
+      color: UnsplashColor;
+      orientation: "portrait" | "landscape" | "all";
+    };
+    collections: {
+      collectionId: string;
+      orientation: UnsplashOrientation;
+    };
+    user: {
+      username: string;
+      orderBy: "popular" | "latest" | "views" | "downloads" | "oldest";
+      orientation: UnsplashOrientation;
+    };
+    random: {
+      collections: string | undefined;
+      topics: string | undefined;
+      username: string | undefined;
+      query: string | undefined;
+      orientation: UnsplashOrientation;
+    };
+    photo: {
+      photoId: string;
+    };
+  };
+};
+
 export type UnsplashSettingsActions =
   | {
       type: "setSourceType";
