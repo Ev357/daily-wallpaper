@@ -21,9 +21,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "android.permission.SET_WALLPAPER"
-      ],
+      "permissions": ["android.permission.SET_WALLPAPER"],
       "package": "com.ev357.dailywallpaper"
     },
     "web": {
@@ -45,6 +43,13 @@
       },
       "eas": {
         "projectId": "301ff7dc-ca3b-4965-8781-0f9c1a0c55a5"
+      }
+    }
+  },
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
       }
     }
   }
