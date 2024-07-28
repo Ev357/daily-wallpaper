@@ -12,7 +12,7 @@ export const onEvent = async (taskId: string) => {
 
         if (!image) return;
 
-        setWallpaper(image, "home");
+        await setWallpaper(image, "home");
         break;
     }
   }
