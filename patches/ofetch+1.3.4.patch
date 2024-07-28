@@ -1,7 +1,7 @@
-diff --git a/dist/shared/ofetch.37386b05.mjs b/dist/shared/ofetch.37386b05.mjs
-index cae0a5501b3b9c681509371708129a4ffbeb1166..b611e38de74dd0a5865801bbd67dc32534addbcf 100644
---- a/dist/shared/ofetch.37386b05.mjs
-+++ b/dist/shared/ofetch.37386b05.mjs
+diff --git a/node_modules/ofetch/dist/shared/ofetch.37386b05.mjs b/node_modules/ofetch/dist/shared/ofetch.37386b05.mjs
+index cae0a55..b611e38 100644
+--- a/node_modules/ofetch/dist/shared/ofetch.37386b05.mjs
++++ b/node_modules/ofetch/dist/shared/ofetch.37386b05.mjs
 @@ -234,7 +234,14 @@ function createFetch(globalOptions = {}) {
          clearTimeout(abortTimeout);
        }
@@ -18,10 +18,10 @@ index cae0a5501b3b9c681509371708129a4ffbeb1166..b611e38de74dd0a5865801bbd67dc325
      if (hasBody) {
        const responseType = (context.options.parseResponse ? "json" : context.options.responseType) || detectResponseType(context.response.headers.get("content-type") || "");
        switch (responseType) {
-diff --git a/dist/shared/ofetch.897a6909.cjs b/dist/shared/ofetch.897a6909.cjs
-index 099990b5b3d70e9b3c191a58d0bc96988ad8d515..4e548bcd2d267f5deb149f3617a42f9707dd030b 100644
---- a/dist/shared/ofetch.897a6909.cjs
-+++ b/dist/shared/ofetch.897a6909.cjs
+diff --git a/node_modules/ofetch/dist/shared/ofetch.897a6909.cjs b/node_modules/ofetch/dist/shared/ofetch.897a6909.cjs
+index 099990b..4e548bc 100644
+--- a/node_modules/ofetch/dist/shared/ofetch.897a6909.cjs
++++ b/node_modules/ofetch/dist/shared/ofetch.897a6909.cjs
 @@ -240,7 +240,14 @@ function createFetch(globalOptions = {}) {
          clearTimeout(abortTimeout);
        }
