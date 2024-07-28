@@ -38,5 +38,8 @@ export const initBackgroundFetch = async () => {
     forceAlarmManager: true,
     periodic: true,
     delay: 5000,
+    enableHeadless: true,
+    stopOnTerminate: false,
+    startOnBoot: true,
   });
 };
